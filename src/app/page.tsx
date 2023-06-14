@@ -87,19 +87,45 @@ import type { NextPage } from "next";
   transition-duration: 150ms;
  */
 
+/*
+  # 4.6 Modifiers for Lists
+  데이터 목록을 map을 통해 리스트 형태로 보여줄 때, 유용하게 쓰이는 modifier (selector)
+
+  first: - 목록의 첫 번째 요소
+  last: - 목록의 마지막 요소
+  only: - 유일한 자식 요소
+  odd: - 홀수 번째 요소 
+  even: - 짝수 번째 요소
+
+  empty (Tailwind 기능 X, CSS selector)
+  empty modifier를 사용하여 콘텐츠가 없는 경우 스타일을 지정
+  콘텐츠가 없는 경우 = 빈 텍스트, undefined, null등과 같이 값이 없을 때
+  (+) empty:hidden은 display: none과 같음
+ */
+
 const Home: NextPage = () => {
   return (
     <div className="bg-slate-400 py-20 px-20 grid gap-10 min-h-screen">
       <div className="bg-white p-6 rounded-3xl shadow-xl">
         <span className="font-semibold text-2xl">Select Item</span>
-        <div className="flex justify-between my-2">
-          <span className="text-gray-500">Grey Chair</span>
-          <span className="font-semibold">$19</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-500">Grey Chair</span>
-          <span className="font-semibold">$19</span>
-        </div>
+        <ul>
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="flex justify-between my-2 odd:bg-blue-50 even:bg-yellow-50 first:bg-teal-50 last:bg-amber-50"
+            >
+              <span className="text-gray-500">Grey Chair</span>
+              <span className="font-semibold">$19</span>
+            </div>
+          ))}
+        </ul>
+        <ul>
+          {["a", "b", "c", ""].map((c, i) => (
+            <li className="bg-red-500 py-2 empty:hidden" key={i}>
+              {c}
+            </li>
+          ))}
+        </ul>
         <div className="flex justify-between mt-2 pt-2 border-t-2 border-dashed">
           <span>Total</span>
           <span className="font-semibold">$10</span>
