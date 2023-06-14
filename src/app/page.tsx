@@ -203,9 +203,7 @@ import type { NextPage } from "next";
 */
 
 /*
-
-/*
-  #4.11 Dark Mode
+  #4.11 dark mode
 
   dark 모드가 활성화되어 있을 때 사이트 스타일을 다르게 지정
   현재 사용 중인 컴퓨터에서 설정한 라이트/다크 모드에 따라 dark가 자동으로 적용
@@ -218,10 +216,10 @@ import type { NextPage } from "next";
   tailwind.config.js에서 다음과 같이 설정
   module.exports = {
   // 클래스를 기준으로 다크모드 적용 (최상위 부모에 dark 클래스 지정)
-  darkMode: 'class',
+  darkmode: 'class',
 
   // @media(prefers-color-scheme)를 기준으로 다크모드 적용 (기본 값)
-  darkMode: "media",
+  darkmode: "media",
   }
 
   prefers-color-scheme
@@ -234,99 +232,31 @@ import type { NextPage } from "next";
     color: black;
     }
   }
-
 */
+
+/*
+  #4.12 Just In Time Compiler
+
+  2021년 3월, Tailwind CSS v3.0이 Just-in-Time 엔진을 사용하기 시작. 이 엔진은 프로젝트에 필요한 스타일을 주문형으로 생성함.
+
+  [BEFORE] 거대한 CSS파일을 생성하고, 그 파일에 이미 정의해놓은 클래스들을 가져와 사용하는 방식.
+  대략 20만줄 정도 되는 클래스로 가득찬 파일을 가져와 개발 단계에서 사용하기 때문에 매우 무겁고,
+  배포 전에는 purge(전체 파일을 스캔한 후, 안쓰는 class를 제거)를 해줘야 해서 번거로움
+
+  [AFTER] 사용자가 사용하는 스타일들만 그때 그때 생성해서 사용하는 방식.
+  여러 클래스들을 조합해서 사용할 수 있고, 매우 가볍고, 배포 전 purge를 해주지 않아도 되서 편함
+  
+  기존 class 이외에 특정 값을 설정하는 방법
+  [BEFORE] Tailwind 방식이 아닌 직접 스타일 코드를 입력해 주어야 했음
+  [AFTER] class에 특정 값을 대괄호([])로 대체하고 안에 원하는 값을 입력하면 JIT 컴파일러가 해석하여 class를 생성함
+  ex) <div className="text-[1000px]">Super Big Text</div>
+      <div className="bg-[url('/vercel.svg')]" />
+ */
 
 const Home: NextPage = () => {
   return (
-    <div className="bg-slate-400 xl:place-content-center py-20 px-20 grid gap-10 lg:grid-cols-2 xl:grid-cols-3 min-h-screen">
-      <div className="bg-white dark:bg-black flex flex-col justify-between p-6 rounded-3xl shadow-xl">
-        <span className="font-semibold dark:text-white text-2xl">
-          Select Item
-        </span>
-        <ul>
-          <div className="flex justify-between my-2 ">
-            <span className="text-gray-500 dark:text-gray-100">Grey Chair</span>
-            <span className="font-semibold dark:text-white">$19</span>
-          </div>
-          <div className="flex justify-between my-2 ">
-            <span className="text-gray-500 dark:text-gray-100">Grey Chair</span>
-            <span className="font-semibold dark:text-white">$19</span>
-          </div>
-        </ul>
-
-        <div className="flex justify-between mt-2 pt-2 border-t-2 border-dashed">
-          <span>Total</span>
-          <span className="font-semibold">$10</span>
-        </div>
-        <button
-          className="mt-5 bg-blue-500 dark:bg-black dark:border-white dark:border text-white p-3
-          text-center rounded-xl w-3/4 block mx-auto 
-          dark:hover:bg-white hover:bg-teal-500 hover:text-black 
-          active:bg-yellow-500 focus:bg-red-500
-          "
-        >
-          Checkout
-        </button>
-      </div>
-      <div className="bg-white overflow-hidden rounded-3xl shadow-xl group">
-        <div className="portrait:bg-indigo-600 landscape:bg-teal-500 p-6 pb-14 xl:pb-40">
-          <span className="text-white text-2xl">Profile</span>
-        </div>
-        <div className="rounded-3xl p-6 bg-white relative -top-5">
-          <div className="flex relative -top-16 items-end justify-between">
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-gray-500">Orders</span>
-              <span className="font-medium">340</span>
-            </div>
-            <div className="h-24 w-24 bg-zinc-300 rounded-full group-hover:bg-red-300 transition-colors" />
-            <div className="flex flex-col items-center">
-              <span className="text-xs text-gray-500">Spent</span>
-              <span className="font-medium">$340</span>
-            </div>
-          </div>
-          <div className="relative  flex flex-col items-center -mt-14 -mb-5">
-            <span className="text-lg font-medium">Tony Molloy</span>
-            <span className="text-sm text-gray-500">미국</span>
-          </div>
-        </div>
-      </div>
-      <div className="bg-white p-6 rounded-3xl shadow-xl lg:col-span-2 xl:col-span-1">
-        <div className="flex mb-5 justify-between items-center">
-          <span>⬅️</span>
-          <div className="space-x-3">
-            <span>⭐️ 4.9</span>
-            <span className="shadow-xl p-2 rounded-md">💖</span>
-          </div>
-        </div>
-        <div className="bg-zinc-400 h-72 mb-5" />
-        <div className="flex flex-col">
-          <span className="font-medium text-xl">Swoon Lounge</span>
-          <span className="text-xs text-gray-500">Chair</span>
-          <div className="mt-3 mb-5 flex justify-between items-center">
-            <div className="space-x-2">
-              <button className="w-5 h-5 rounded-full bg-yellow-500 focus:ring-2 ring-offset-2 ring-yellow-500 transition" />
-              <button className="w-5 h-5 rounded-full bg-indigo-500 focus:ring-2 ring-offset-2 ring-indigo-500 transition" />
-              <button className="w-5 h-5 rounded-full bg-teal-500 focus:ring-2 ring-offset-2 ring-teal-500 transition" />
-            </div>
-            <div className="flex items-center space-x-5">
-              <button className=" rounded-lg bg-blue-200 flex justify-center items-center aspect-square w-8 text-xl text-gray-500">
-                -
-              </button>
-              <span>1</span>
-              <button className=" rounded-lg bg-blue-200 flex justify-center items-center aspect-square w-8 text-xl text-gray-500">
-                +
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="font-medium text-2xl">$450</span>
-            <button className="bg-blue-500 py-2 px-8 text-center text-xs text-white rounded-lg">
-              Add to cart
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className="dark:md:hover:bg-teal-400 bg-[url('/vercel.svg')]">
+      <h2 className="text-[97851px] text-[#000]">Hello</h2>
     </div>
   );
 };
