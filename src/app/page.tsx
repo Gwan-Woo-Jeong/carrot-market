@@ -111,22 +111,23 @@ import type { NextPage } from "next";
   group-hover와 같은 group-* 수정자를 사용하여 대상 요소의 스타일을 지정
   (+) group-focus, group-active, group-odd와 같은 모든 유사 클래스 수정자와 함께 작동함
 
-  focus-within: (일반 CSS selector)
+  ** 아래 modifier들은 Tailwind 기능 X, 일반 CSS selector
+  focus-within: 
   form 태그 내의 인풋이 focus 될 때, 스타일 지정
 
-  required: (일반 CSS selector)
+  required: 
   form 태그 내의 필수 입력 인풋에게 스타일 지정
 
-  invalid: (일반 CSS selector)
+  invalid: 
   form 태그 내의 인풋의 값이 없을 때, 스타일 지정 (<-> valid : 값이 있을 때)
 
-  placeholder-shown: (일반 CSS selector)
+  placeholder-shown: 
   form 태그 내의 인풋의 placeholder가 보여질 때, 스타일 지정
 
-  placeholder: (일반 CSS selector)
+  placeholder: 
   form 태그 내의 인풋의 placeholder에게 스타일 지정
 
-  peer
+  peer 
   형제 요소와 상호작용 했을 때, 스타일 지정
   형제 요소의 상태를 기반으로 요소의 스타일을 지정해야 하는 경우 형제 클래스에 peer를 표시하고 
   peer-invalid와 같은 peer-* 수정자를 사용하여 대상 요소의 스타일을 지정 
@@ -137,26 +138,55 @@ import type { NextPage } from "next";
   < p class="peer-invalid:visible">Please fill in</p>
  */
 
+/*
+details
+details 태그는 "열림" 상태일 때만 내부 정보를 보여주는 위젯을 생성함 
+요약이나 레이블은 summary 태그로 보여줄 수 있었는데 레이블 옆의 작은 삼각형이 돌아가면서 열림/닫힘 상태를 나타냈다.
+details 요소의 첫 번째 자식이 summary 요소라면, summary의 콘텐츠를 위젯의 레이블로 사용한다.
+
+ex)
+< details>
+< summary>Details
+Something small enough to escape casual notice.
+< /details>
+
+** 아래 modifier들은 Tailwind 기능 X, 일반 CSS selector
+open:
+summary가 열렸을 때 스타일 지정
+
+selection:
+텍스트를 커서로 드래그 했을 때 스타일을 지정
+
+list-보여줄 목록 형태:
+- decimal : 숫자 ex) 1.\
+- disc : 점
+ 
+marker:
+위 리스트 표시에 스타일을 지정
+
+first-letter:
+콘텐츠 텍스트의 첫 번째 글자에 스타일을 지정
+
+File input buttons
+파일 수정자를 사용하여 파일 입력의 버튼 스타일 지정
+ex) file:mr-4 file:py-2 file:px-4
+
+::file-selector-button
+::file-selector-button CSS 의사 요소는 type="file"의 input 버튼을 나타냄
+ex) input[type=file]::file-selector-button
+
+modifier는 중첩이 가능함
+ex) file:hover:text-purple-400 
+= 파일 입력 버튼 위에 커서를 올렸을 때, 텍스트 색상을 보라색으로 적용
+*/
+
 const Home: NextPage = () => {
   return (
-    <form className="flex flex-col space-y-2  p-5 ">
-      <input
-        type="text"
-        required
-        placeholder="Username"
-        className="border p-1 peer border-gray-400 rounded-md "
-      />
-      <span className="hidden peer-invalid:block peer-invalid:text-red-500">
-        This input is invalid
-      </span>
-      <span className="hidden peer-valid:block peer-valid:text-teal-500">
-        Awesome username
-      </span>
-      <span className="hidden peer-hover:block peer-hover:text-amber-500">
-        Hello
-      </span>
-      <input type="submit" value="Login" className="bg-white" />
-    </form>
+    <div className="flex flex-col space-y-2  p-5 ">
+      <p className="first-letter:text-7xl first-letter:hover:text-purple-400">
+        Hello everyone!
+      </p>
+    </div>
   );
 };
 
