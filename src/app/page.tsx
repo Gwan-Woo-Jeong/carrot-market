@@ -139,53 +139,169 @@ import type { NextPage } from "next";
  */
 
 /*
-details
-details 태그는 "열림" 상태일 때만 내부 정보를 보여주는 위젯을 생성함 
-요약이나 레이블은 summary 태그로 보여줄 수 있었는데 레이블 옆의 작은 삼각형이 돌아가면서 열림/닫힘 상태를 나타냈다.
-details 요소의 첫 번째 자식이 summary 요소라면, summary의 콘텐츠를 위젯의 레이블로 사용한다.
+  #4.8 More Modifiers
+  details
+  details 태그는 "열림" 상태일 때만 내부 정보를 보여주는 위젯을 생성함 
+  요약이나 레이블은 summary 태그로 보여줄 수 있었는데 레이블 옆의 작은 삼각형이 돌아가면서 열림/닫힘 상태를 나타냈다.
+  details 요소의 첫 번째 자식이 summary 요소라면, summary의 콘텐츠를 위젯의 레이블로 사용한다.
 
-ex)
-< details>
-< summary>Details
-Something small enough to escape casual notice.
-< /details>
+  ex)
+  < details>
+  < summary>Details
+  Something small enough to escape casual notice.
+  < /details>
 
-** 아래 modifier들은 Tailwind 기능 X, 일반 CSS selector
-open:
-summary가 열렸을 때 스타일 지정
+  ** 아래 modifier들은 Tailwind 기능 X, 일반 CSS selector
+  open:
+  summary가 열렸을 때 스타일 지정
 
-selection:
-텍스트를 커서로 드래그 했을 때 스타일을 지정
+  selection:
+  텍스트를 커서로 드래그 했을 때 스타일을 지정
 
-list-보여줄 목록 형태:
-- decimal : 숫자 ex) 1.\
-- disc : 점
- 
-marker:
-위 리스트 표시에 스타일을 지정
+  list-보여줄 목록 형태:
+  - decimal : 숫자 ex) 1.\
+  - disc : 점
+  
+  marker:
+  위 리스트 표시에 스타일을 지정
 
-first-letter:
-콘텐츠 텍스트의 첫 번째 글자에 스타일을 지정
+  first-letter:
+  콘텐츠 텍스트의 첫 번째 글자에 스타일을 지정
 
-File input buttons
-파일 수정자를 사용하여 파일 입력의 버튼 스타일 지정
-ex) file:mr-4 file:py-2 file:px-4
+  File input buttons
+  파일 수정자를 사용하여 파일 입력의 버튼 스타일 지정
+  ex) file:mr-4 file:py-2 file:px-4
 
-::file-selector-button
-::file-selector-button CSS 의사 요소는 type="file"의 input 버튼을 나타냄
-ex) input[type=file]::file-selector-button
+  ::file-selector-button
+  ::file-selector-button CSS 의사 요소는 type="file"의 input 버튼을 나타냄
+  ex) input[type=file]::file-selector-button
 
-modifier는 중첩이 가능함
-ex) file:hover:text-purple-400 
-= 파일 입력 버튼 위에 커서를 올렸을 때, 텍스트 색상을 보라색으로 적용
+  modifier는 중첩이 가능함
+  ex) file:hover:text-purple-400 
+  = 파일 입력 버튼 위에 커서를 올렸을 때, 텍스트 색상을 보라색으로 적용
+*/
+
+/*
+  #4.9 Responsive Modifiers
+  보통 데스크탑 -> 모바일 반응형 적용
+  Tailwind는 반대 모바일로 만든 후, 큰 화면을 위한 (데스크탑) modifier를 적용
+  = Mobile First
+
+  기본적으로 Tailwind는 Bootstrap과 같은 다른 프레임워크에서 사용하는 것과 유사한 모바일 우선 breakpoint 시스템을 사용
+  즉, 접두사가 붙지 않은 유틸리티는 모든 화면 크기에 적용되는 반면 
+  접두사가 붙은 유틸리티(ex. uppercase)는 지정된 breakpoint 이상에서만 적용
+
+  모바일용 CSS는 접두사가 없음. 사이즈는 다음과 같음.
+  모바일 -> sm(작은 화면, 모바일 X) -> md(중간 화면) -> lg(큰 화면) -> xl -> 2xl 
+
+  실제 픽셀 사이즈
+  sm 640px @media (min-width: 640px) { ... }
+  md 768px @media (min-width: 768px) { ... }
+  lg 1024px @media (min-width: 1024px) { ... }
+  xl 1280px @media (min-width: 1280px) { ... }
+  2xl 1536px @media (min-width: 1536px) { ... }
+*/
+
+/*
+  #4.10 Responsive Modifiers part Two
+
+  Viewport orientation
+  : portrait 및 landscape 수정자를 사용해 뷰포트가 특정 방향에 있을 때 조건부로 스타일 적용
+
+  ex)
+  div class="portrait:hidden"
+  div class="landscape:hidden"
+
 */
 
 const Home: NextPage = () => {
   return (
-    <div className="flex flex-col space-y-2  p-5 ">
-      <p className="first-letter:text-7xl first-letter:hover:text-purple-400">
-        Hello everyone!
-      </p>
+    <div className="bg-slate-400 xl:place-content-center py-20 px-20 grid gap-10 lg:grid-cols-2 xl:grid-cols-3 min-h-screen">
+      <div className="bg-white  flex flex-col justify-between p-6 rounded-3xl shadow-xl">
+        <span className="font-semibold text-2xl">Select Item</span>
+        <ul>
+          <div className="flex justify-between my-2 ">
+            <span className="text-gray-500">Grey Chair</span>
+            <span className="font-semibold">$19</span>
+          </div>
+          <div className="flex justify-between my-2 ">
+            <span className="text-gray-500">Grey Chair</span>
+            <span className="font-semibold">$19</span>
+          </div>
+        </ul>
+
+        <div className="flex justify-between mt-2 pt-2 border-t-2 border-dashed">
+          <span>Total</span>
+          <span className="font-semibold">$10</span>
+        </div>
+        <button
+          className="mt-5 bg-blue-500 text-white p-3
+          text-center rounded-xl w-3/4 block mx-auto 
+          hover:bg-teal-500 hover:text-black
+          active:bg-yellow-500 focus:bg-red-500
+          "
+        >
+          Checkout
+        </button>
+      </div>
+      <div className="bg-white overflow-hidden rounded-3xl shadow-xl group">
+        <div className="portrait:bg-indigo-600 landscape:bg-teal-500 p-6 pb-14 xl:pb-40">
+          <span className="text-white text-2xl">Profile</span>
+        </div>
+        <div className="rounded-3xl p-6 bg-white relative -top-5">
+          <div className="flex relative -top-16 items-end justify-between">
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-gray-500">Orders</span>
+              <span className="font-medium">340</span>
+            </div>
+            <div className="h-24 w-24 bg-zinc-300 rounded-full group-hover:bg-red-300 transition-colors" />
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-gray-500">Spent</span>
+              <span className="font-medium">$340</span>
+            </div>
+          </div>
+          <div className="relative  flex flex-col items-center -mt-14 -mb-5">
+            <span className="text-lg font-medium">Tony Molloy</span>
+            <span className="text-sm text-gray-500">미국</span>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white p-6 rounded-3xl shadow-xl lg:col-span-2 xl:col-span-1">
+        <div className="flex mb-5 justify-between items-center">
+          <span>⬅️</span>
+          <div className="space-x-3">
+            <span>⭐️ 4.9</span>
+            <span className="shadow-xl p-2 rounded-md">💖</span>
+          </div>
+        </div>
+        <div className="bg-zinc-400 h-72 mb-5" />
+        <div className="flex flex-col">
+          <span className="font-medium text-xl">Swoon Lounge</span>
+          <span className="text-xs text-gray-500">Chair</span>
+          <div className="mt-3 mb-5 flex justify-between items-center">
+            <div className="space-x-2">
+              <button className="w-5 h-5 rounded-full bg-yellow-500 focus:ring-2 ring-offset-2 ring-yellow-500 transition" />
+              <button className="w-5 h-5 rounded-full bg-indigo-500 focus:ring-2 ring-offset-2 ring-indigo-500 transition" />
+              <button className="w-5 h-5 rounded-full bg-teal-500 focus:ring-2 ring-offset-2 ring-teal-500 transition" />
+            </div>
+            <div className="flex items-center space-x-5">
+              <button className=" rounded-lg bg-blue-200 flex justify-center items-center aspect-square w-8 text-xl text-gray-500">
+                -
+              </button>
+              <span>1</span>
+              <button className=" rounded-lg bg-blue-200 flex justify-center items-center aspect-square w-8 text-xl text-gray-500">
+                +
+              </button>
+            </div>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-medium text-2xl">$450</span>
+            <button className="bg-blue-500 py-2 px-8 text-center text-xs text-white rounded-lg">
+              Add to cart
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
