@@ -203,30 +203,55 @@ import type { NextPage } from "next";
 */
 
 /*
-  #4.10 Responsive Modifiers part Two
 
-  Viewport orientation
-  : portrait 및 landscape 수정자를 사용해 뷰포트가 특정 방향에 있을 때 조건부로 스타일 적용
+/*
+  #4.11 Dark Mode
+
+  dark 모드가 활성화되어 있을 때 사이트 스타일을 다르게 지정
+  현재 사용 중인 컴퓨터에서 설정한 라이트/다크 모드에 따라 dark가 자동으로 적용
+
+  ex) dark:bg-slate-900
+
+  수동으로 다크 모드 전환
+  기본 설정 대신 수동으로 다크 모드로 전환하려면 media 대신 class을 사용
+
+  tailwind.config.js에서 다음과 같이 설정
+  module.exports = {
+  // 클래스를 기준으로 다크모드 적용 (최상위 부모에 dark 클래스 지정)
+  darkMode: 'class',
+
+  // @media(prefers-color-scheme)를 기준으로 다크모드 적용 (기본 값)
+  darkMode: "media",
+  }
+
+  prefers-color-scheme
+  사용자의 시스템이 라이트나 다크 테마를 사용하는지 탐지하는 데에 사용
 
   ex)
-  div class="portrait:hidden"
-  div class="landscape:hidden"
+  @media (prefers-color-scheme: light) {
+    .themed {
+    background: white;
+    color: black;
+    }
+  }
 
 */
 
 const Home: NextPage = () => {
   return (
     <div className="bg-slate-400 xl:place-content-center py-20 px-20 grid gap-10 lg:grid-cols-2 xl:grid-cols-3 min-h-screen">
-      <div className="bg-white  flex flex-col justify-between p-6 rounded-3xl shadow-xl">
-        <span className="font-semibold text-2xl">Select Item</span>
+      <div className="bg-white dark:bg-black flex flex-col justify-between p-6 rounded-3xl shadow-xl">
+        <span className="font-semibold dark:text-white text-2xl">
+          Select Item
+        </span>
         <ul>
           <div className="flex justify-between my-2 ">
-            <span className="text-gray-500">Grey Chair</span>
-            <span className="font-semibold">$19</span>
+            <span className="text-gray-500 dark:text-gray-100">Grey Chair</span>
+            <span className="font-semibold dark:text-white">$19</span>
           </div>
           <div className="flex justify-between my-2 ">
-            <span className="text-gray-500">Grey Chair</span>
-            <span className="font-semibold">$19</span>
+            <span className="text-gray-500 dark:text-gray-100">Grey Chair</span>
+            <span className="font-semibold dark:text-white">$19</span>
           </div>
         </ul>
 
@@ -235,9 +260,9 @@ const Home: NextPage = () => {
           <span className="font-semibold">$10</span>
         </div>
         <button
-          className="mt-5 bg-blue-500 text-white p-3
+          className="mt-5 bg-blue-500 dark:bg-black dark:border-white dark:border text-white p-3
           text-center rounded-xl w-3/4 block mx-auto 
-          hover:bg-teal-500 hover:text-black
+          dark:hover:bg-white hover:bg-teal-500 hover:text-black 
           active:bg-yellow-500 focus:bg-red-500
           "
         >
