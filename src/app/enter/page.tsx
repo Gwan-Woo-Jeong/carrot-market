@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { NextPage } from "next";
+import { cls } from "@/libs/utils";
+
 
 /*
     #5.1 Auth part One
@@ -46,12 +48,6 @@ import type { NextPage } from "next";
     CSS user-select 속성은 사용자가 텍스트를 선택할 수 있는지 지정
     ex) user-select: none;
 */
-
-
-
-function cls(...classnames: string[]) {
-  return classnames.join(" ");
-}
 
 const Enter: NextPage = () => {
   const [method, setMethod] = useState<"email" | "phone">("email");
