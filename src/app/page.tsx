@@ -64,6 +64,29 @@ import type { NextPage } from "next";
   dark (@media (prefers-color-scheme: dark))
  */
 
+/*
+  # 4.5 Transitions
+  ring : 요소 주위로 shadow를 링 모양으로 설정 (offset으로 간격 설정 가능)
+
+  Modifier를 설정하면 해당 요소를 변수로 처리하기 때문에, 다른 CSS까지 modifier를 붙일 필요없다.
+  
+  transition : 한 요소의 CSS 속성에 변화하는 애니메이션 효과를 줄 수 있음
+  transition-none	: 효과 주지 않기
+
+  transition-all : 모든 효과 주기	
+치
+  transition-colors : 색상 효과	
+  transition-opacity : 투명도 효과
+  transition-shadow	: 그림자 효과
+  transition-transform : 위치 효과
+
+  하나의 클래스 이름을 주는 것만으로 완성된 transition 효과를 줄 수 있다
+  ex ) transition-color는 다음과 같은 css 속성들을 한 번에 적용시킴
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+ */
+
 const Home: NextPage = () => {
   return (
     <div className="bg-slate-400 py-20 px-20 grid gap-10 min-h-screen">
@@ -83,10 +106,10 @@ const Home: NextPage = () => {
         </div>
         <button
           className="mt-5 bg-blue-500 text-white p-3
-          text-center rounded-xl w-3/4 mx-auto 
+          text-center rounded-xl w-3/4 block mx-auto 
           hover:bg-teal-500 hover:text-black
           active:bg-yellow-500 focus:bg-red-500
-         "
+          "
         >
           Checkout
         </button>
@@ -127,9 +150,9 @@ const Home: NextPage = () => {
           <span className="text-xs text-gray-500">Chair</span>
           <div className="mt-3 mb-5 flex justify-between items-center">
             <div className="space-x-2">
-              <button className="w-5 h-5 rounded-full bg-yellow-500" />
-              <button className="w-5 h-5 rounded-full bg-indigo-500" />
-              <button className="w-5 h-5 rounded-full bg-teal-500" />
+              <button className="w-5 h-5 rounded-full bg-yellow-500 focus:ring-2 ring-offset-2 ring-yellow-500 transition" />
+              <button className="w-5 h-5 rounded-full bg-indigo-500 focus:ring-2 ring-offset-2 ring-indigo-500 transition" />
+              <button className="w-5 h-5 rounded-full bg-teal-500 focus:ring-2 ring-offset-2 ring-teal-500 transition" />
             </div>
             <div className="flex items-center space-x-5">
               <button className=" rounded-lg bg-blue-200 flex justify-center items-center aspect-square w-8 text-xl text-gray-500">
