@@ -1,7 +1,8 @@
 "use client";
 
-import Layout from "@/components/Layout";
+import Layout from "@/components/layout";
 import type { NextPage } from "next";
+import Button from "@/components/button";
 
 /*
   #5.4 Item Detail
@@ -18,7 +19,7 @@ import type { NextPage } from "next";
 const ItemDetail: NextPage = () => {
   return (
     <Layout canGoBack>
-      <div className="px-4 py-10">
+      <div className="px-4  py-4">
         <div className="mb-8">
           <div className="h-96 bg-slate-300" />
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
@@ -44,9 +45,7 @@ const ItemDetail: NextPage = () => {
               the first motherfucker to get shot. You understand?
             </p>
             <div className="flex items-center justify-between space-x-2">
-              <button className="flex-1 bg-orange-500 text-white py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium hover:bg-orange-600 focus:ring-orange-500 ">
-                Talk to seller
-              </button>
+              <Button large text="Talk to seller" />
               <button className="p-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
                 <svg
                   className="h-6 w-6 "
@@ -70,15 +69,13 @@ const ItemDetail: NextPage = () => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className=" mt-6 grid grid-cols-2 gap-4">
-            {Array(6)
-              .fill(1)
-              .map((_, i) => (
-                <div key={i}>
-                  <div className="h-56 w-full mb-4 bg-slate-300" />
-                  <h3 className="text-gray-700 -mb-1">Galaxy S60</h3>
-                  <span className="text-sm font-medium text-gray-900">$6</span>
-                </div>
-              ))}
+            {[1, 2, 3, 4, 5, 6].map((_, i) => (
+              <div key={i}>
+                <div className="h-56 w-full mb-4 bg-slate-300" />
+                <h3 className="text-gray-700 -mb-1">Galaxy S60</h3>
+                <span className="text-sm font-medium text-gray-900">$6</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
