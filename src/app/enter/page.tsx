@@ -12,8 +12,25 @@ interface EnterForm {
   phone?: "string";
 }
 
+/*
+  8.1 Form Submission (08:24)
+  Uploading JSON data
+
+- POST 프로토콜로 JSON 인코딩된 데이터를 보내기 위해 fetch()를 사용
+- body의 데이터 유형은 반드시 `Content-Type` 헤더와 일치해야함
+
+await fetch(url, {
+	method: 'POST', // *GET, POST, PUT, DELETE 등
+
+	body: JSON.stringify(data), // string or {object}
+
+	headers: { 'Content-Type': 'application/json' }
+})
+ */
+
 const Enter: NextPage = () => {
   const [method, setMethod] = useState<"email" | "phone">("email");
+  const [submitting, setSubmitting] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<EnterForm>();
 
@@ -27,7 +44,18 @@ const Enter: NextPage = () => {
     setMethod("phone");
   };
 
-  const onValid = (data: EnterForm) => {};
+  const onValid = async (data: EnterForm) => {
+    setSubmitting(true);
+    await fetch("/api/users/enter", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      setSubmitting(false);
+    });
+  };
 
   return (
     <div className="mt-16 px-4">
@@ -83,7 +111,9 @@ const Enter: NextPage = () => {
               required
             />
           ) : null}
-          {method === "email" ? <Button text={"Get login link"} /> : null}
+          {method === "email" ? (
+            <Button text={submitting ? "Loading" : "Get login link"} />
+          ) : null}
           {method === "phone" ? (
             <Button text={"Get one-time password"} />
           ) : null}
