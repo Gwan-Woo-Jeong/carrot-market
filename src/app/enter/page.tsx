@@ -5,55 +5,30 @@ import type { NextPage } from "next";
 import { cls } from "@/libs/utils";
 import Button from "@/components/button";
 import Input from "@/components/input";
+import { useForm } from "react-hook-form";
 
-/*
-    #5.1 Auth part One
-
-    Array.prototype.join() 메서드는 배열의 모든 요소를 연결해 하나의 문자열로 만든다.
-    이를 사용해 여러 클래스 네임을 한 줄로 합쳐주는 함수를 만들 수 있다. 템플릿 리터럴로 
-    조건부 클래스를 주는 복잡한 코드를 만들 필요가 없이, 여러 클래스를 함수의 인자로 넣어 호출하기만 하면 된다.
-
-    ex)
-    function cls(...classnames: string[]) {
-        return classnames.join(" ");
-    }
- */
-
-/*
-    #5.2 Auth part Two
-
-    Plugins
-    플러그인을 사용하면 CSS 대신 JS를 사용하여 스타일시트에 삽입할 Tailwind에 대한 새 스타일을 등록할 수 있다.
-
-    @tailwindcss/forms
-    (form요소에 다양한 기본 스타일을 추가함)
-    form 스타일에 대한 기본 reset을 제공하는 플러그인. 
-    
-    [설치]
-    npm install -D @tailwindcss/forms
-
-    @tailwindcss/forms 플러그인 설치 후, tailwind.config.js에 아래와 같이 plugins에 추가
-
-    // tailwind.config.js
-    module.exports = {
-        theme: {
-            // ...
-        },
-        plugins: [
-            require('@tailwindcss/forms'),
-            // ...
-        ],
-    }
-
-    user-select
-    CSS user-select 속성은 사용자가 텍스트를 선택할 수 있는지 지정
-    ex) user-select: none;
-*/
+interface EnterForm {
+  email?: "string";
+  phone?: "string";
+}
 
 const Enter: NextPage = () => {
   const [method, setMethod] = useState<"email" | "phone">("email");
-  const onEmailClick = () => setMethod("email");
-  const onPhoneClick = () => setMethod("phone");
+
+  const { register, handleSubmit, reset } = useForm<EnterForm>();
+
+  const onEmailClick = () => {
+    reset();
+    setMethod("email");
+  };
+
+  const onPhoneClick = () => {
+    reset();
+    setMethod("phone");
+  };
+
+  const onValid = (data: EnterForm) => {};
+
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
@@ -85,12 +60,22 @@ const Enter: NextPage = () => {
             </button>
           </div>
         </div>
-        <form className="flex flex-col mt-8 space-y-4">
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="flex flex-col mt-8 space-y-4"
+        >
           {method === "email" ? (
-            <Input name="email" label="Email address" type="email" required />
+            <Input
+              register={register("email")}
+              name="email"
+              label="Email address"
+              type="email"
+              required
+            />
           ) : null}
           {method === "phone" ? (
             <Input
+              register={register("phone")}
               name="phone"
               label="Phone number"
               type="number"
