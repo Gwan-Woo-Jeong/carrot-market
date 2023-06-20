@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 
 interface EnterForm {
-  email?: "string";
-  phone?: "string";
+  email?: string;
+  phone?: string;
 }
 
 /*
@@ -33,7 +33,6 @@ const Enter: NextPage = () => {
   const [enter, { loading, data, error }] = useMutation("/api/users/enter");
 
   const [method, setMethod] = useState<"email" | "phone">("email");
-  const [submitting, setSubmitting] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<EnterForm>();
 
@@ -47,8 +46,9 @@ const Enter: NextPage = () => {
     setMethod("phone");
   };
 
-  const onValid = async (data: EnterForm) => {
-    enter(data);
+  const onValid = async (validForm: EnterForm) => {
+    if (loading) return;
+    enter(validForm);
   };
 
   return (
@@ -106,10 +106,10 @@ const Enter: NextPage = () => {
             />
           ) : null}
           {method === "email" ? (
-            <Button text={submitting ? "Loading" : "Get login link"} />
+            <Button text={loading ? "Loading" : "Get login link"} />
           ) : null}
           {method === "phone" ? (
-            <Button text={"Get one-time password"} />
+            <Button text={loading ? "Loading" : "Get one-time password"} />
           ) : null}
         </form>
 

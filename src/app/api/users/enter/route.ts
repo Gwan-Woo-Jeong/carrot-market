@@ -1,124 +1,39 @@
-/*
-  9.1 Accounts Logic
-  Upsert : Update or Create Records
-  조건에 맞는 기존 데이터가 있으면 업데이트 없으면 새롭게 생성
-  where, create, update 객체가 모두 들어가야 함
- */
-
 import client from "@/libs/server/client";
+
+/*
+  9.2 Token Logic
+ */
 
 export async function POST(req: Request) {
   const { phone, email } = await req.json();
 
-  // VERSION 4
   const payload = phone ? { phone: +phone } : { email };
-  const user = await client.user.upsert({
-    where: {
-      ...payload,
+
+  // 토큰 생성
+  const token = await client.token.create({
+    data: {
+      payload: "123",
+      // 로그인한 유저의 id로 토큰 연결
+      user: {
+        /*
+          connect : 새로운 토큰을 이미 생성된 유저와 연결
+          create : 새로운 토큰과 새로운 유저를 생성
+          connectOrCreate : 유저를 찾으면 connect / 못찾으면 create (= upsert)
+        */
+        connectOrCreate: {
+          where: {
+            ...payload,
+          },
+          create: {
+            name: "Anonymous",
+            ...payload,
+          },
+        },
+      },
     },
-    create: {
-      name: "Anonymous",
-      ...payload,
-    },
-    update: {},
   });
 
-  console.log(user);
-
-  /*
-  VERSION 3
-
-  let user;
-
-  user = await client.user.upsert({
-    where: {
-      ...(phone && { phone }),
-      ...(email && { email }),
-    },
-    create: {
-      name: "Anonymous",
-      ...(phone && { phone }),
-      ...(email && { email }),
-    },
-    update: {},
-  });
-  */
-
-  /*
-  // VERSION 2
-  let user;
-
-  if (phone) {
-    user = await client.user.upsert({
-      where: {
-        phone,
-      },
-      create: {
-        name: "Anonymous",
-        phone,
-      },
-      update: {},
-    });
-  }
-
-  if (email) {
-    user = await client.user.upsert({
-      where: {
-        email,
-      },
-      create: {
-        name: "Anonymous",
-        email,
-      },
-      update: {},
-    });
-  }
-  */
-
-  /*
-  // VERSION 1
-  let user;
-
-  if (email) {
-    user = await client.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (user) console.log(`found user : ${email}`);
-
-    if (!user) {
-      console.log(`not found user, will creatae : ${email}`);
-      user = client.user.create({
-        data: {
-          name: "Anonymous",
-          email,
-        },
-      });
-    }
-  }
-
-  if (phone) {
-    user = await client.user.findUnique({
-      where: {
-        phone,
-      },
-    });
-
-    if (user) console.log(`found user : ${phone}`);
-
-    if (!user) {
-      console.log(`not found user, will creatae : ${phone}`);
-      user = client.user.create({
-        data: {
-          name: "Anonymous",
-          phone,
-        },
-      });
-    }
-  }
-  */
+  console.log(token);
 
   return new Response("ok", { status: 200 });
 }
