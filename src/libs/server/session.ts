@@ -8,8 +8,14 @@ import { getIronSession, createResponse } from "iron-session";
     - 세션을 위한 백엔드 구축이 필요 없음
  */
 
+export interface ironSessionData {
+  user?: {
+    id: number;
+  };
+}
+
 export const getSession = (req: Request, res: Response) => {
-  const session = getIronSession(req, res, {
+  const session = getIronSession<ironSessionData>(req, res, {
     cookieName: "Carrot Session",
     password: "dMC5xXev2iETQgufUNkpdkktwxdFqxi3",
     cookieOptions: {
