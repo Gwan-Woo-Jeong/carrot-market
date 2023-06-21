@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-interface UseMutationState {
+interface UseMutationState<T> {
   loading: boolean;
-  data?: object;
+  data?: T;
   error?: object;
 }
 
-type UseMutationResult = [(data: any) => void, UseMutationState];
+type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
 
 /*
     8.2 -8.3 : Clean Code
@@ -15,8 +15,10 @@ type UseMutationResult = [(data: any) => void, UseMutationState];
     url을 인자로 받아, POST 요청을 한 후 응답으로 받은 데이터를 리턴 
  */
 
-export default function useMutation(url: string): UseMutationResult {
-  const [state, setState] = useState<UseMutationState>({
+export default function useMutation<T = any>(
+  url: string
+): UseMutationResult<T> {
+  const [state, setState] = useState<UseMutationState<T>>({
     loading: false,
     data: undefined,
     error: undefined,

@@ -11,27 +11,28 @@ datasource db {
   relationMode = "prisma"
 }
 
-// #6.2 Prisma Setup
-// schema.prisma 파일에 DB가 어떻게 생겼는지, 어떤 형태의 데이터를 받는지 명시해주면 client를 생성해줌
+// 9.6 Token UI
+// BigInt (자바스크립트 타입)
+// Number 원시 값이 안정적으로 나타낼 수 있는 최대치인 2^53 - 1보다 큰 정수를 표현할 수 있는 내장 객체
 
-// model
-// User라는 column은 다음과 같다
+// onDelete: Cascade
+// 부모 레코드가 삭제되면 자식 레코드도 함께 삭제
 
 model User {
-  id        Int      @id @default(autoincrement()) 
-  phone     Int?     @unique 
+  id        Int      @id @default(autoincrement())
+  phone     BigInt?  @unique // Number 원시 값이 안정적으로 나타낼 수 있는 최대치인 2^53 - 1보다 큰 정수를 표현
   email     String?  @unique
   name      String
   avatar    String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  updatedAt DateTime @updatedAt
   tokens    Token[]
 }
 
 model Token {
   id        Int      @id @default(autoincrement())
   payload   String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // User 삭제 시 참조된 토큰 또한 삭제
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
