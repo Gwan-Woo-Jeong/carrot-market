@@ -55,5 +55,5 @@ export async function POST(req: NextRequest) {
     // console.log(email);
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, token });
 }
