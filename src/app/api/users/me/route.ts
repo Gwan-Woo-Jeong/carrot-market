@@ -1,12 +1,10 @@
 import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 
 /*
-  9.8 Profile Handler
-  - 모든 api는 실제 백엔드 없이 개별적으로 동작하기 때문에
-  - 각 api 마다 type과 withIronSessionApiRoute config를 매번 설정해줘야함
-  - 쿠키에 세션이 userId가 저장되어 있기 때문에 Id에 해당하는 user정보를 가져올 수 있음
+  9.8 Protected Handlers
  */
 
 export async function GET(req: NextRequest) {
@@ -14,9 +12,17 @@ export async function GET(req: NextRequest) {
 
   const session = await getSession(req, res);
 
-  const profile = await client.user.findUnique({
-    where: { id: session.user?.id },
-  });
+  if (session.user) {
+    const profile = await client.user.findUnique({
+      where: { id: session.user?.id },
+    });
 
-  return createResponse(res, JSON.stringify(profile), { status: 200 });
+    return createResponse(res, JSON.stringify(profile), { status: 200 });
+  } else {
+    return createResponse(
+      res,
+      JSON.stringify({ ok: false, message: "Please log in" }),
+      { status: 401 }
+    );
+  }
 }
