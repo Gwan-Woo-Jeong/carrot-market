@@ -4,6 +4,7 @@ import Layout from "@/components/layout";
 import type { NextPage } from "next";
 import FloatingButton from "@/components/floating-button";
 import Item from "@/components/item";
+import useUser from "@/libs/client/useUser";
 
 /*
   Heroicons
@@ -23,6 +24,8 @@ import Item from "@/components/item";
  */
 
 const Home: NextPage = () => {
+  const user = useUser();
+  console.log(user);
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5 divide-y">

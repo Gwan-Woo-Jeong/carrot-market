@@ -17,7 +17,9 @@ export async function GET(req: NextRequest) {
       where: { id: session.user?.id },
     });
 
-    return createResponse(res, JSON.stringify(profile), { status: 200 });
+    return createResponse(res, JSON.stringify({ ok: true, profile }), {
+      status: 200,
+    });
   } else {
     return createResponse(
       res,
