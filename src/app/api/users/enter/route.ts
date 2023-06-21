@@ -1,39 +1,50 @@
 import client from "@/libs/server/client";
+import { NextRequest, NextResponse } from "next/server";
+import twilio from "twilio";
 
 /*
-  9.2 Token Logic
+  9.4 Sending SMS
  */
 
-export async function POST(req: Request) {
+const twilioClienet = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
+
+export async function POST(req: NextRequest) {
   const { phone, email } = await req.json();
 
-  const payload = phone ? { phone: +phone } : { email };
+  const user = phone ? { phone: +phone } : { email };
+  if (!user) return NextResponse.json({ ok: false }, { status: 400 });
 
-  // 토큰 생성
+  const payload = Math.floor(100000 + Math.random() * 900000) + "";
+
   const token = await client.token.create({
     data: {
-      payload: "123",
-      // 로그인한 유저의 id로 토큰 연결
+      payload,
       user: {
-        /*
-          connect : 새로운 토큰을 이미 생성된 유저와 연결
-          create : 새로운 토큰과 새로운 유저를 생성
-          connectOrCreate : 유저를 찾으면 connect / 못찾으면 create (= upsert)
-        */
         connectOrCreate: {
           where: {
-            ...payload,
+            ...user,
           },
           create: {
             name: "Anonymous",
-            ...payload,
+            ...user,
           },
         },
       },
     },
   });
 
+  // 핸드폰 번호 가입인 경우 token을 문자로 전송
+  if (phone) {
+    const message = await twilioClienet.messages.create({
+      messagingServiceSid: process.env.TWILIO_MSID,
+      to: process.env.MY_PHONE!,
+      body: `Your login token is ${payload}`,
+    });
+
+    console.log(message);
+  }
+
   console.log(token);
 
-  return new Response("ok", { status: 200 });
+  return NextResponse.json({ ok: true });
 }
