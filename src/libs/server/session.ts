@@ -17,7 +17,7 @@ export interface ironSessionData {
 export const getSession = (req: Request, res: Response) => {
   const session = getIronSession<ironSessionData>(req, res, {
     cookieName: "Carrot Session",
-    password: "dMC5xXev2iETQgufUNkpdkktwxdFqxi3",
+    password: process.env.COOKIE_PASSWORD!,
     cookieOptions: {
       secure: false,
     },

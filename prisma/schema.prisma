@@ -20,7 +20,7 @@ datasource db {
 
 model User {
   id        Int      @id @default(autoincrement())
-  phone     BigInt?  @unique // Number 원시 값이 안정적으로 나타낼 수 있는 최대치인 2^53 - 1보다 큰 정수를 표현
+  phone     String?  @unique // Number 원시 값이 안정적으로 나타낼 수 있는 최대치인 2^53 - 1보다 큰 정수를 표현
   email     String?  @unique
   name      String
   avatar    String?

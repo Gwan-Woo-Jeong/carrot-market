@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { cls } from "@/libs/client/utils";
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
+import { useRouter } from "next/navigation";
 
 interface EnterForm {
   email?: string;
@@ -18,7 +19,7 @@ interface TokenForm {
 }
 
 /*
-  9.6 Token UI
+  9.9 Clean code
  */
 
 interface mutationResult {
@@ -60,7 +61,14 @@ const Enter: NextPage = () => {
     confirmToken(validForm);
   };
 
-  console.log(data);
+  // 토큰을 받으면 로그인 처리
+  const router = useRouter();
+
+  useEffect(() => {
+    if (tokenData?.ok === true) {
+      router.push("/");
+    }
+  }, [tokenData, router]);
 
   return (
     <div className="mt-16 px-4">

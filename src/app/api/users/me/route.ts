@@ -1,6 +1,6 @@
 import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 /*
   9.8 Profile Handler

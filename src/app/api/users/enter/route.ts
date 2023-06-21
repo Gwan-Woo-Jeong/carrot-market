@@ -13,7 +13,7 @@ const twilioClienet = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 export async function POST(req: NextRequest) {
   const { phone, email } = await req.json();
 
-  const user = phone ? { phone: +phone } : { email };
+  const user = phone ? { phone } : { email };
   if (!user) return NextResponse.json({ ok: false }, { status: 400 });
 
   const payload = Math.floor(100000 + Math.random() * 900000) + "";
