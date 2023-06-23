@@ -3,22 +3,30 @@
 import Layout from "@/components/layout";
 import type { NextPage } from "next";
 import Button from "@/components/button";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import Link from "next/link";
 import { Product, User } from "@prisma/client";
 import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
+import useUser from "@/libs/client/useUser";
 
 /*
   #11.8 Bound Mutations
+  Optimistic UI Update
+  서버에 요청 후 응답을 기다리지 않고 즉각적으로 UI를 업데이트하는 기법
+  이를 구현하기 위해 mutate 함수를 사용함
+
   Mutate
-  (data? - 데이터, shouldRevalidate? - 데이터 갱신 여부)
+  (data? - 캐쉬된 데이터, shouldRevalidate? - 서버에서 받은 데이터로 갱신 여부)
   캐시된 데이터를 변형하기 위한 함수
 
   Bound Mutate
-  useSWR이 반환한 SWR 객체는 키로 미리 바인딩 한 mutate() 함수를 포함
-  기능적으로는 전역 mutate 함수와 동일, key 파라미터를 요구하지 않음
-  ex) const { data, mutate } = useSWR('/api/user', fetcher)
+  동일한 컴포넌트 안에서 데이터를 변형
+  useSWR Hook 사용
+
+  Unbound Mutate
+  다른 컴포넌트에서 데이터를 변형
+  useSWRConfig Hook 사용
  */
 
 interface ProductWithUser extends Product {
@@ -35,16 +43,21 @@ interface ItemDetailResponse {
 const ItemDetail: NextPage<{ params: { id: string } }> = ({
   params: { id },
 }) => {
-  const { data, mutate } = useSWR<ItemDetailResponse>(
+  const { user, isLoading } = useUser();
+
+  const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     id ? `/api/products/${id}` : null
   );
+
+  const { mutate } = useSWRConfig();
 
   const [toggleFav] = useMutation(`/api/products/${id}/fav`);
 
   const onFavClick = () => {
     toggleFav({});
     if (!data) return;
-    mutate({ ...data, isLiked: !data.isLiked }, false);
+    boundMutate({ ...data, isLiked: !data.isLiked }, false);
+    mutate("/api/users/me", (prev) => ({ ...prev, ok: false }), false);
   };
 
   return (
