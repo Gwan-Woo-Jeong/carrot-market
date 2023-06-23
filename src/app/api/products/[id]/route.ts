@@ -51,9 +51,24 @@ export async function GET(
       },
     });
 
+    // 좋아요 표시 여부
+    const isLiked = Boolean(
+      await client.fav.findFirst({
+        // 상품과 유저가 일치하는 데이터
+        where: {
+          productId: product?.id,
+          userId: session.user.id,
+        },
+        // 효율성을 위해 id만 선택
+        select: {
+          id: true,
+        },
+      })
+    );
+
     return createResponse(
       res,
-      JSON.stringify({ ok: true, product, relatedProducts }),
+      JSON.stringify({ ok: true, product, relatedProducts, isLiked }),
       {
         status: 200,
       }
