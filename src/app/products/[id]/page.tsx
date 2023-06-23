@@ -6,9 +6,19 @@ import Button from "@/components/button";
 import useSWR from "swr";
 import Link from "next/link";
 import { Product, User } from "@prisma/client";
+import useMutation from "@/libs/client/useMutation";
+import { cls } from "@/libs/client/utils";
 
 /*
-  #11.5 Related Products
+  #11.8 Bound Mutations
+  Mutate
+  (data? - 데이터, shouldRevalidate? - 데이터 갱신 여부)
+  캐시된 데이터를 변형하기 위한 함수
+
+  Bound Mutate
+  useSWR이 반환한 SWR 객체는 키로 미리 바인딩 한 mutate() 함수를 포함
+  기능적으로는 전역 mutate 함수와 동일, key 파라미터를 요구하지 않음
+  ex) const { data, mutate } = useSWR('/api/user', fetcher)
  */
 
 interface ProductWithUser extends Product {
@@ -19,14 +29,23 @@ interface ItemDetailResponse {
   ok: boolean;
   product: ProductWithUser;
   relatedProducts: ProductWithUser[];
+  isLiked: boolean;
 }
 
 const ItemDetail: NextPage<{ params: { id: string } }> = ({
   params: { id },
 }) => {
-  const { data } = useSWR<ItemDetailResponse>(
+  const { data, mutate } = useSWR<ItemDetailResponse>(
     id ? `/api/products/${id}` : null
   );
+
+  const [toggleFav] = useMutation(`/api/products/${id}/fav`);
+
+  const onFavClick = () => {
+    toggleFav({});
+    if (!data) return;
+    mutate({ ...data, isLiked: !data.isLiked }, false);
+  };
 
   return (
     <Layout canGoBack>
@@ -57,22 +76,45 @@ const ItemDetail: NextPage<{ params: { id: string } }> = ({
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
             <div className="flex items-center justify-between space-x-2">
               <Button large text="Talk to seller" />
-              <button className="p-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
-                <svg
-                  className="h-6 w-6 "
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
+              <button
+                onClick={() => onFavClick()}
+                className={cls(
+                  "p-3 rounded-md flex items-center justify-center",
+                  data?.isLiked
+                    ? "text-red-600 hover:bg-red-100 hover:text-red-500"
+                    : "text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                )}
+              >
+                {data?.isLiked ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-6 w-6 "
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
