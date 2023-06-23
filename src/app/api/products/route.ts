@@ -3,7 +3,7 @@ import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
 /*
-  #11.4 Product Detail
+  #11.10 Counting Relationships
  */
 
 export async function POST(req: NextRequest) {
@@ -41,7 +41,16 @@ export async function GET(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const products = await client.product.findMany({});
+    // product를 가리키고 있는 fav의 개수(_count)를 추가
+    const products = await client.product.findMany({
+      include: {
+        _count: {
+          select: {
+            fav: true,
+          },
+        },
+      },
+    });
 
     return createResponse(res, JSON.stringify({ ok: true, products }), {
       status: 200,
