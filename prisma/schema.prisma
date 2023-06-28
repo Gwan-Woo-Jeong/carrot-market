@@ -76,7 +76,7 @@ model Post {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   answers   Answer[]
-  Wondering Wondering[]
+  wonderings Wondering[]
 
   @@index([userId])
 }
