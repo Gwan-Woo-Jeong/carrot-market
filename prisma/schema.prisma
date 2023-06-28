@@ -69,14 +69,16 @@ model Fav {
 }
 
 model Post {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade) // user에게 속함
-  question  String      @db.MediumText
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  answers   Answer[]
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade) // user에게 속함
+  question   String      @db.MediumText
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  answers    Answer[]
   wonderings Wondering[]
+  latitude   Float?
+  longitude  Float?
 
   @@index([userId])
 }

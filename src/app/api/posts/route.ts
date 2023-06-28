@@ -44,11 +44,13 @@ export async function POST(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const { question } = await req.json();
+    const { question, latitude, longitude } = await req.json();
 
     const post = await client.post.create({
       data: {
         question,
+        latitude,
+        longitude,
         user: {
           connect: {
             id: session.user.id,
