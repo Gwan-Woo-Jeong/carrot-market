@@ -12,7 +12,7 @@ import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
 import { useForm } from "react-hook-form";
 
-// #12.4 Answer
+// #12.5 All Posts
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -86,8 +86,9 @@ const CommunityPostDetail: NextPage<{ params: { id: string } }> = ({
   useEffect(() => {
     if (answerData && answerData.ok) {
       reset();
+      mutate();
     }
-  }, [answerData, reset]);
+  }, [answerData, reset, mutate]);
 
   const onValid = (data: AnswerForm) => {
     if (answerLoading) return;
