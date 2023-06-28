@@ -3,7 +3,7 @@ import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
 /*
-  #12.2 Post Detail 
+    #12.3 궁금해요
  */
 
 export async function GET(
@@ -11,6 +11,7 @@ export async function GET(
   { params: { id } }: { params: { id: string } }
 ) {
   const res = new Response();
+  const session = await getSession(req, res);
 
   const post = await client.post.findUnique({
     where: {
@@ -45,10 +46,26 @@ export async function GET(
       },
     },
   });
+
+  const isWondering = session?.user
+    ? Boolean(
+        await client.wondering.findFirst({
+          where: {
+            postId: +id.toString(),
+            userId: session.user.id,
+          },
+        })
+      )
+    : false;
+
   if (post) {
-    return createResponse(res, JSON.stringify({ ok: true, post }), {
-      status: 200,
-    });
+    return createResponse(
+      res,
+      JSON.stringify({ ok: true, post, isWondering }),
+      {
+        status: 200,
+      }
+    );
   } else {
     return createResponse(
       res,
