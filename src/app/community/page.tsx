@@ -6,6 +6,7 @@ import Link from "next/link";
 import FloatingButton from "../../components/floating-button";
 import useSWR from "swr";
 import { Post, User } from "@prisma/client";
+import useCoords from "@/libs/client/useCoords";
 
 interface PostResponse {
   ok: boolean;
@@ -20,10 +21,15 @@ interface PostWithUser extends Post {
   };
 }
 
-// #12.5 All Posts
+// #12.7 Geo Search
 
 const Community: NextPage = () => {
-  const { data } = useSWR<PostResponse>(`/api/posts`);
+  const { latitude, longitude } = useCoords();
+  const { data } = useSWR<PostResponse>(
+    latitude && longitude
+      ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
+      : null
+  );
 
   return (
     <Layout hasTabBar title="동네생활">
