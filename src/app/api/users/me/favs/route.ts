@@ -3,7 +3,7 @@ import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
 /*
-  9.8 Protected Handlers
+  13.2 Handlers
  */
 
 export async function GET(req: NextRequest) {
@@ -12,11 +12,16 @@ export async function GET(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const profile = await client.user.findUnique({
-      where: { id: session.user?.id },
+    const favs = await client.fav.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      include: {
+        product: true,
+      },
     });
 
-    return createResponse(res, JSON.stringify({ ok: true, profile }), {
+    return createResponse(res, JSON.stringify({ ok: true, favs }), {
       status: 200,
     });
   } else {
