@@ -11,22 +11,33 @@ datasource db {
   relationMode = "prisma"
 }
 
-// #12.0 Models
+// #13.0 Models
+
+// @relation (name: 관계를 명확하게 하기 위해 관계의 이름을 정의)
+// (fields: 현재 모델의 필드 목록, references: 관계의 반대편에 있는 모델의 필드 목록)
+// Disambiguating relations - 두 개의 동일한 모델 간에 두 관계를 정의할 때 relation을 불분명할 경우 에러 발생
+
+// enum - 열거형 타입으로 
 
 model User {
-  id         Int         @id @default(autoincrement())
-  phone      String?     @unique
-  email      String?     @unique
-  name       String
-  avatar     String?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  tokens     Token[]
-  products   Product[]
-  fav        Fav[]
-  posts      Post[] // 여러 post를 가지고 있음
-  answers    Answer[] // 여러 answer를 가지고 있음
-  wonderings Wondering[] // 여러 wonrdering(궁금해요)를 가지고 있음
+  id              Int         @id @default(autoincrement())
+  phone           String?     @unique
+  email           String?     @unique
+  name            String
+  avatar          String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  tokens          Token[]
+  products        Product[]
+  fav             Fav[]
+  posts           Post[]
+  answers         Answer[]
+  wonderings      Wondering[]
+  writtenReviews  Review[]    @relation(name: "writtenReviews") // 리뷰 작성한 유저
+  receivedReviews Review[]    @relation(name: "receivedReviews") // 리뷰 받은 유저
+  sales           Sale[]
+  purchases       Purchase[]
+  Record          Record[]
 }
 
 model Token {
@@ -41,30 +52,20 @@ model Token {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   image       String
   name        String
   price       Int
-  description String   @db.MediumText
+  description String     @db.MediumText
   fav         Fav[]
+  sales       Sale[]
+  purchases   Purchase[]
+  Record      Record[]
 
-  @@index([userId])
-}
-
-model Fav {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([productId])
   @@index([userId])
 }
 
@@ -108,4 +109,83 @@ model Wondering {
 
   @@index([userId])
   @@index([postId])
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  review       String   @db.MediumText
+  //  User를 두 번 가리키고 있는 상황 -> 각 관계의 이름을 명시해주어야 함
+  createdBy    User     @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade) // 리뷰를 작성한 유저
+  createdById  Int
+  createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade) // 리뷰를 받은 유저
+  createdForId Int
+
+  @@index([createdById])
+  @@index([createdForId])
+}
+
+///////////////////////////
+
+model Fav {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+}
+
+///////////////////////////
+// 위와 같이 똑같은 형태(Fav, Sale, Purchase)의 모델을 다음과 같이 생성할 수 있음
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  kind      Kind
+
+  @@index([productId])
+  @@index([userId])
+}
+
+enum Kind {
+  Purchase
+  Sale
+  Fav
 }
