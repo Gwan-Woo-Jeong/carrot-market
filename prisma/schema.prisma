@@ -11,13 +11,12 @@ datasource db {
   relationMode = "prisma"
 }
 
-// #13.0 Models
+// #13.1 Reviews
 
-// @relation (name: 관계를 명확하게 하기 위해 관계의 이름을 정의)
-// (fields: 현재 모델의 필드 목록, references: 관계의 반대편에 있는 모델의 필드 목록)
-// Disambiguating relations - 두 개의 동일한 모델 간에 두 관계를 정의할 때 relation을 불분명할 경우 에러 발생
-
-// enum - 열거형 타입으로 
+// 레코드가 이미 존재하는 상태에서 테이블에 필드 추가 시 충돌 해결방법
+// 1. 기존 테이블에 있는 레코드 전부 삭제
+// 2. 추가하는 필드를 optional 설정
+// 3. 추가하는 필드에 기본값 (default) 부여
 
 model User {
   id              Int         @id @default(autoincrement())
@@ -121,6 +120,7 @@ model Review {
   createdById  Int
   createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade) // 리뷰를 받은 유저
   createdForId Int
+  score        Int      @default(0)
 
   @@index([createdById])
   @@index([createdForId])
