@@ -2,9 +2,7 @@ import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
-/*
-  13.2 Handlers
- */
+// #13.4 Sales, Purchases, Favorites
 
 export async function GET(req: NextRequest) {
   const res = new Response();
@@ -17,7 +15,15 @@ export async function GET(req: NextRequest) {
         userId: session.user.id,
       },
       include: {
-        product: true,
+        product: {
+          include: {
+            _count: {
+              select: {
+                fav: true,
+              },
+            },
+          },
+        },
       },
     });
 

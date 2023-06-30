@@ -13,7 +13,7 @@ interface ProductResponse {
   products: ProductWithHeart[];
 }
 
-interface ProductWithHeart extends Product {
+export interface ProductWithHeart extends Product {
   _count: { fav: number };
 }
 
