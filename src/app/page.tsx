@@ -4,7 +4,6 @@ import Layout from "@/components/layout";
 import type { NextPage } from "next";
 import FloatingButton from "@/components/floating-button";
 import Item from "@/components/item";
-import useUser from "@/libs/client/useUser";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
@@ -18,8 +17,6 @@ export interface ProductWithHeart extends Product {
 }
 
 const Home: NextPage = () => {
-  const { user, isLoading } = useUser();
-
   const { data } = useSWR<ProductResponse>("/api/products");
 
   return (

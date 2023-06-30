@@ -8,7 +8,6 @@ import Link from "next/link";
 import { Product, User } from "@prisma/client";
 import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
-import useUser from "@/libs/client/useUser";
 
 /*
   #11.8 Bound Mutations
@@ -43,8 +42,6 @@ interface ItemDetailResponse {
 const ItemDetail: NextPage<{ params: { id: string } }> = ({
   params: { id },
 }) => {
-  const { user, isLoading } = useUser();
-
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     id ? `/api/products/${id}` : null
   );
