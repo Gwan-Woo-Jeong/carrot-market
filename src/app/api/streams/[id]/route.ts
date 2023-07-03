@@ -2,7 +2,7 @@ import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
-// #13.4 Sales, Purchases, Favorites
+// #14.3 See Message
 
 export async function GET(
   req: NextRequest,
@@ -15,6 +15,20 @@ export async function GET(
   if (session.user) {
     const stream = await client.stream.findUnique({
       where: { id: +id.toString() },
+      include: {
+        messages: {
+          select: {
+            id: true,
+            message: true,
+            user: {
+              select: {
+                id: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!stream) {

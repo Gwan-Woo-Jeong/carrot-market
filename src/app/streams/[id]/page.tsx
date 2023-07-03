@@ -5,26 +5,95 @@ import Layout from "@/components/layout";
 import Message from "@/components/message";
 import useSWR from "swr";
 import { Stream } from "@prisma/client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import useMutation from "@/libs/client/useMutation";
+import useUser from "@/libs/client/useUser";
 
 /*
-    #5.14 Stream
+    #14.4 Mutations and Refresh
+  
+    refreshInterval
+    - 기본적으로 비활성화 (refreshInterval = 0)
+    - 숫자를 설정하면 밀리초 간격으로 polling
+    - 함수로 설정하면 함수는 최신 데이터를 받고, 밀리초 단위로 리턴
  */
-interface StreamResponse {
-  ok: true;
-  stream: Stream;
+
+interface StreamMessage {
+  message: string;
+  id: number;
+  user: {
+    avatar?: string;
+    id: number;
+  };
 }
 
-const Stream: NextPage<{ params: { id: string } }> = ({ params: { id } }) => {
-  const { data } = useSWR<StreamResponse>(id ? `/api/streams/${id}` : null);
+interface StreamWithMessages extends Stream {
+  messages: StreamMessage[];
+}
+
+interface StreamResponse {
+  ok: true;
+  stream: StreamWithMessages;
+}
+
+interface MessageForm {
+  message: string;
+}
+
+const DetailStream: NextPage<{ params: { id: string } }> = ({
+  params: { id },
+}) => {
+  const { user } = useUser();
+  const { data, mutate } = useSWR<StreamResponse>(
+    id ? `/api/streams/${id}` : null,
+    (url: string) => fetch(url).then((res) => res.json()),
+    { refreshInterval: 1000 }
+  );
   const router = useRouter();
+  const { register, handleSubmit, reset } = useForm<MessageForm>();
+  const [sendMessage, { data: sendMessageData, loading }] = useMutation(
+    `/api/streams/${id}/messages`
+  );
+
+  const onValid = (form: MessageForm) => {
+    if (loading) return;
+    reset();
+    mutate(
+      (prev) =>
+        prev &&
+        ({
+          ...prev,
+          stream: {
+            ...prev.stream,
+            messages: [
+              ...prev.stream.messages,
+              {
+                id: Date.now(),
+                message: form.message,
+                user: {
+                  ...user,
+                },
+              },
+            ],
+          },
+        } as any),
+      false
+    );
+    sendMessage(form);
+  };
 
   useEffect(() => {
     if (data && !data?.ok) {
       router.push("/streams");
     }
   }, [data, router]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    scrollRef?.current?.scrollIntoView();
+  });
 
   return (
     <Layout canGoBack>
@@ -42,14 +111,23 @@ const Stream: NextPage<{ params: { id: string } }> = ({ params: { id } }) => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
           <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
-            <Message message="Hi how much are you selling them for?" />
-            <Message message="I want ￦20,000" reversed />
-            <Message message="미쳤어" />
+            {data?.stream?.messages.map((message) => (
+              <Message
+                key={message.id}
+                message={message.message}
+                reversed={message.user.id === user?.id}
+              />
+            ))}
+            <div ref={scrollRef} />
           </div>
           <div className="fixed py-2 bg-white  bottom-0 inset-x-0">
-            <div className="flex relative max-w-md items-center  w-full mx-auto">
+            <form
+              onSubmit={handleSubmit(onValid)}
+              className="flex relative max-w-md items-center  w-full mx-auto"
+            >
               <input
                 type="text"
+                {...register("message", { required: true })}
                 className="shadow-sm rounded-full w-full border-gray-300 focus:ring-orange-500 focus:outline-none pr-12 focus:border-orange-500"
               />
               <div className="absolute inset-y-0 flex py-1.5 pr-1.5 right-0">
@@ -57,7 +135,7 @@ const Stream: NextPage<{ params: { id: string } }> = ({ params: { id } }) => {
                   &rarr;
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -65,4 +143,4 @@ const Stream: NextPage<{ params: { id: string } }> = ({ params: { id } }) => {
   );
 };
 
-export default Stream;
+export default DetailStream;
