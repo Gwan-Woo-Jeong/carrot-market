@@ -5,28 +5,49 @@ import Layout from "@/components/layout";
 import Link from "next/link";
 import FloatingButton from "@/components/floating-button";
 import { Stream } from "@prisma/client";
-import useSWR from "swr";
+import useInfiniteSWR from "swr/infinite";
+import { fetcher } from "@/libs/client/utils";
+import { useEffect } from "react";
+import { useInfiniteScroll } from "@/libs/client/useInfiniteScroll";
 
 /*
-  #14.1 Detail Page
+  #14.6 Pagination
+
+  useInfiniteSWR
+  pagination을 적용해야하는 상황에서 여러 요청을 실행시킨 후 이에 대한 응답 데이터를 배열에 누적시킴
+  
+  - getKey : pageIndex, previousPageData를 인자로 받아 key(api url)를 반환. null일 때 요청 하지 않음.
  */
 
 interface StreamsResponse {
   ok: boolean;
   streams: Stream[];
+  pages: number;
 }
 
+const getKey = (pageIndex: number, previousPageData: StreamsResponse) => {
+  if (pageIndex === 0) return `api/streams?page=1`;
+  if (pageIndex + 1 > previousPageData.pages) return null;
+  return `/api/streams?page=${pageIndex + 1}`;
+};
+
 const Streams: NextPage = () => {
-  const { data } = useSWR<StreamsResponse>(`/api/streams`);
+  const page = useInfiniteScroll();
+  const { data, setSize } = useInfiniteSWR<StreamsResponse>(getKey, fetcher);
+  const streams = data ? data.map((item) => item.streams).flat() : [];
+
+  useEffect(() => {
+    setSize(page);
+  }, [setSize, page]);
 
   return (
     <Layout hasTabBar title="라이브">
       <div className=" divide-y-[1px] space-y-4">
-        {data?.streams.map((stream, i) => (
+        {streams.map((stream, i) => (
           <Link
             key={stream.id}
-            href={`/live/${stream.id}`}
-            className="pt-4 block  px-4"
+            href={`/streams/${stream.id}`}
+            className="pt-4 block px-4"
           >
             <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
             <h1 className="text-2xl mt-2 font-bold text-gray-900">

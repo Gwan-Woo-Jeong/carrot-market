@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import useUser from "@/libs/client/useUser";
+import { fetcher } from "@/libs/client/utils";
 
 /*
     #14.4 Mutations and Refresh
@@ -48,7 +49,7 @@ const DetailStream: NextPage<{ params: { id: string } }> = ({
   const { user } = useUser();
   const { data, mutate } = useSWR<StreamResponse>(
     id ? `/api/streams/${id}` : null,
-    (url: string) => fetch(url).then((res) => res.json()),
+    fetcher,
     { refreshInterval: 1000 }
   );
   const router = useRouter();

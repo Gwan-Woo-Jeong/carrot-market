@@ -2,7 +2,7 @@ import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
-// #14.1 Detail Page
+// #14.6 Pagination
 
 export async function GET(req: NextRequest) {
   const res = new Response();
@@ -10,11 +10,30 @@ export async function GET(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const streams = await client.stream.findMany();
+    const size = req.nextUrl.searchParams.get("size");
+    const page = req.nextUrl.searchParams.get("page");
 
-    return createResponse(res, JSON.stringify({ ok: true, streams }), {
-      status: 200,
+    const sizeVal = size ? +size : 10;
+    const pageVal = page ? +page : 1;
+
+    const streams = await client.stream.findMany({
+      take: sizeVal, // 전달할 레코드의 개수
+      skip: (pageVal - 1) * sizeVal, // 이전 개수의 레코드를 생략
     });
+
+    const streamCount = await client.stream.count();
+
+    return createResponse(
+      res,
+      JSON.stringify({
+        ok: true,
+        streams,
+        pages: Math.ceil(streamCount / sizeVal),
+      }),
+      {
+        status: 200,
+      }
+    );
   } else {
     return createResponse(
       res,

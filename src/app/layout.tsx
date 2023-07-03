@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { SWRConfig } from "swr";
 import React from "react";
 import useUser from "@/libs/client/useUser";
+import { fetcher } from "@/libs/client/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,11 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SWRConfig
-          value={{
-            fetcher: (url: string) => fetch(url).then((res) => res.json()),
-          }}
-        >
+        <SWRConfig value={{ fetcher }}>
           <div className="w-full max-w-lg mx-auto">{children}</div>
         </SWRConfig>
       </body>
