@@ -5,9 +5,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// #14.6 Pagination
+// connection pool timeout 설정
+// 데이터베이스 연결 URL에 pool_timeout 매개변수를 명시적으로 설정하면 pool_timeout를 지정 가능
+
 datasource db {
   provider     = "mysql"
-  url          = env("DATABASE_URL")
+  url          = env("DATABASE_URL") // ex) url = "...?connection_limit=5&pool_timeout=2"
   relationMode = "prisma"
 }
 
