@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const product = await client.product.create({
       data: {
         name,
-        price: +price,
+        price,
         description,
         image: "",
         user: {

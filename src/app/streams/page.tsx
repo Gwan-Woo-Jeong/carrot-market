@@ -4,32 +4,33 @@ import type { NextPage } from "next";
 import Layout from "@/components/layout";
 import Link from "next/link";
 import FloatingButton from "@/components/floating-button";
+import { Stream } from "@prisma/client";
+import useSWR from "swr";
 
 /*
-    #5.13 Streams
-
-    Aspect Ratio
-
-    요소의 종횡비를 제어
-    대괄호를 사용하여 새로운 속성을 생성 가능
-
-    ex )
-    aspect-auto = aspect-ratio: auto;
-    aspect-square = aspect-ratio: 1 / 1;
-    aspect-video = aspect-ratio: 16 / 9;
-
-    iframe class="w-full aspect-[4/3]" src="https://www.youtube.com/...
+  #14.1 Detail Page
  */
 
-const Live: NextPage = () => {
+interface StreamsResponse {
+  ok: boolean;
+  streams: Stream[];
+}
+
+const Streams: NextPage = () => {
+  const { data } = useSWR<StreamsResponse>(`/api/streams`);
+
   return (
     <Layout hasTabBar title="라이브">
       <div className=" divide-y-[1px] space-y-4">
-        {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <Link key={i} href={`/live/${i}`} className="pt-4 block  px-4">
+        {data?.streams.map((stream, i) => (
+          <Link
+            key={stream.id}
+            href={`/live/${stream.id}`}
+            className="pt-4 block  px-4"
+          >
             <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
             <h1 className="text-2xl mt-2 font-bold text-gray-900">
-              Galaxy S50
+              {stream.name}
             </h1>
           </Link>
         ))}
@@ -54,4 +55,4 @@ const Live: NextPage = () => {
   );
 };
 
-export default Live;
+export default Streams;
