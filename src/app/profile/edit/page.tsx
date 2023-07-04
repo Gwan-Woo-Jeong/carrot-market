@@ -11,8 +11,6 @@ import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-// #13.6 Edit Profile
-
 interface EditProfileForm {
   email?: string;
   phone?: string;
@@ -26,7 +24,7 @@ interface EditProfileResponse {
   error?: string;
 }
 
-// #15.4 Direct Upload URL
+// #15.6 Serving Images
 
 const EditProfile: NextPage = () => {
   const { user } = useUser();
@@ -48,6 +46,10 @@ const EditProfile: NextPage = () => {
     if (user?.name) setValue("name", user.name);
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
+    if (user?.avatar)
+      setAvatarPreview(
+        `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user.avatar}/public`
+      );
   }, [user, setValue]);
 
   useEffect(() => {
@@ -72,24 +74,28 @@ const EditProfile: NextPage = () => {
 
     if (avatar && avatar.length > 0) {
       // CF URL 요청
-      const { id, uploadURL } = await (await fetch(`/api/files`)).json();
+      const { uploadURL } = await (await fetch(`/api/files`)).json();
 
       const form = new FormData();
 
       form.append("file", avatar[0]);
 
       // CloudFlare로부터 서버를 경유해 받은 URL을 통해 CF로 이미지 전송
-      await fetch(uploadURL, {
-        method: "POST",
-        body: form,
-      });
+      const {
+        result: { id }, // CloudFlare에서 저장된 이미지 id
+      } = await (
+        await fetch(uploadURL, {
+          method: "POST",
+          body: form,
+        })
+      ).json();
 
       // CF URL로 파일 업로드
       editProfile({
         email,
         phone,
         name,
-        // avatarURL : CF URL
+        avatarId: id,
       });
     } else {
       editProfile({ email, phone, name });

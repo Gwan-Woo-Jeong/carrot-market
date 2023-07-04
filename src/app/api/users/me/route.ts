@@ -2,7 +2,7 @@ import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
 import { NextRequest } from "next/server";
 
-// #13.6 Edit Profile
+// #15.6 Serving Images
 
 export async function GET(req: NextRequest) {
   const res = new Response();
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const { email, phone, name } = await req.json();
+    const { email, phone, name, avatarId } = await req.json();
 
     const currentUser = await client.user.findUnique({
       where: { id: session.user.id },
@@ -105,6 +105,17 @@ export async function POST(req: NextRequest) {
         },
         data: {
           name,
+        },
+      });
+    }
+
+    if (avatarId) {
+      await client.user.update({
+        where: {
+          id: session.user?.id,
+        },
+        data: {
+          avatar: avatarId,
         },
       });
     }
