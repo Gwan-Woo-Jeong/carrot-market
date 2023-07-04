@@ -24,7 +24,18 @@ interface EditProfileResponse {
   error?: string;
 }
 
-// #15.6 Serving Images
+// #15.7 Resizing Images
+
+/*
+  Cloudflarea에 업로드 된 이미지는 크기를 조정하는 방법을 지정하는 variants을 지원 (최대)
+  각 variants에는 크기가 조정된 이미지의 너비와 높이를 포함한 속성이 있음
+  
+  variants 속성
+  - Scale down : 주어진 너비 또는 높이에 완전히 맞도록 크기가 축소 (확대 X)
+  - Contain : 가로 세로 비율을 유지, 주어진 너비 또는 높이 내에서 가능한 한 크게 크기 조정(축소 또는 확대)
+  - Cover : 너비와 높이로 지정된 전체 영역을 정확히 채우도록 이미지 크기가 조정되고 필요한 경우 자름
+  - Crop : 너비와 높이로 지정된 영역에 맞게 이미지가 축소되고 자름
+ */
 
 const EditProfile: NextPage = () => {
   const { user } = useUser();
@@ -48,7 +59,7 @@ const EditProfile: NextPage = () => {
     if (user?.phone) setValue("phone", user.phone);
     if (user?.avatar)
       setAvatarPreview(
-        `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user.avatar}/public`
+        `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user.avatar}/avatar`
       );
   }, [user, setValue]);
 

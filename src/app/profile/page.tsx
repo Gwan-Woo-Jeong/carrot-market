@@ -8,7 +8,7 @@ import { Review, User } from "@prisma/client";
 import { cls } from "@/libs/client/utils";
 import Image from "next/image";
 
-// #15.6 Serving Images
+// #15.7 Resizing Images
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -32,7 +32,7 @@ const Profile: NextPage = () => {
               alt={user?.avatar}
               width={16}
               height={16}
-              src={`https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user?.avatar}/public`}
+              src={`https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user?.avatar}/avatar`}
               className="w-16 h-16 bg-slate-500 rounded-full"
             />
           ) : (
