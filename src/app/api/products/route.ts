@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const res = new Response();
-  const { name, price, description } = await req.json();
+  const { name, price, description, photoId } = await req.json();
   const session = await getSession(req, res);
 
   if (session.user) {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         name,
         price,
         description,
-        image: "",
+        image: photoId,
         user: {
           connect: { id: session.user.id },
         },
