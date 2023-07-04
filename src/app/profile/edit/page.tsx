@@ -26,6 +26,8 @@ interface EditProfileResponse {
   error?: string;
 }
 
+// #15.4 Direct Upload URL
+
 const EditProfile: NextPage = () => {
   const { user } = useUser();
   const {
@@ -60,14 +62,27 @@ const EditProfile: NextPage = () => {
     }
   }, [data, router]);
 
-  const onValid = ({ email, phone, name, avatar }: EditProfileForm) => {
+  const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
     if (loading) return;
     if (email === "" && phone === "" && name === "") {
       return setError("formErrors", {
         message: "Email or Phone number, or Name is required",
       });
     }
-    editProfile({ email, phone, name });
+
+    if (avatar && avatar.length > 0) {
+      // CF URL 요청
+      const cloudflareRequest = await (await fetch(`/api/files`)).json();
+      // CF URL로 파일 업로드
+      editProfile({
+        email,
+        phone,
+        name,
+        // avatarURL : CF URL
+      });
+    } else {
+      editProfile({ email, phone, name });
+    }
   };
 
   const [avatarPreview, setAvatarPreview] = useState("");
