@@ -72,7 +72,18 @@ const EditProfile: NextPage = () => {
 
     if (avatar && avatar.length > 0) {
       // CF URL 요청
-      const cloudflareRequest = await (await fetch(`/api/files`)).json();
+      const { id, uploadURL } = await (await fetch(`/api/files`)).json();
+
+      const form = new FormData();
+
+      form.append("file", avatar[0]);
+
+      // CloudFlare로부터 서버를 경유해 받은 URL을 통해 CF로 이미지 전송
+      await fetch(uploadURL, {
+        method: "POST",
+        body: form,
+      });
+
       // CF URL로 파일 업로드
       editProfile({
         email,
