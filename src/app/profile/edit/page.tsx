@@ -10,6 +10,18 @@ import { useEffect, useState } from "react";
 import useMutation from "@/libs/client/useMutation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  UploadTaskSnapshot,
+  StorageError,
+} from "firebase/storage";
+
+import firebase from "@/libs/server/firebase";
+import { v4 as uuidv4 } from "uuid";
+import uploadToFirebase from "@/libs/client/upload";
 
 interface EditProfileForm {
   email?: string;
@@ -57,10 +69,18 @@ const EditProfile: NextPage = () => {
     if (user?.name) setValue("name", user.name);
     if (user?.email) setValue("email", user.email);
     if (user?.phone) setValue("phone", user.phone);
-    if (user?.avatar)
+    if (user?.avatar) {
+      /*
+      Cloud Flare
+
       setAvatarPreview(
         `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${user.avatar}/avatar`
       );
+      */
+
+      // Firebase
+      setAvatarPreview(user.avatar);
+    }
   }, [user, setValue]);
 
   useEffect(() => {
@@ -84,6 +104,9 @@ const EditProfile: NextPage = () => {
     }
 
     if (avatar && avatar.length > 0) {
+      /*
+      CloudFlare 
+
       // CF URL 요청
       const { uploadURL } = await (await fetch(`/api/files`)).json();
 
@@ -101,13 +124,27 @@ const EditProfile: NextPage = () => {
         })
       ).json();
 
+
       // CF URL로 파일 업로드
       editProfile({
         email,
         phone,
         name,
-        avatarId: id,
+        avatarId: id, 
       });
+      */
+
+      // Firebase
+      if (avatar && user?.id) {
+        uploadToFirebase({
+          type: "avatar",
+          file: avatar,
+          userId: user.id,
+          onComplete: (url) => {
+            editProfile({ email, phone, name, avatar: url });
+          },
+        });
+      }
     } else {
       editProfile({ email, phone, name });
     }
@@ -141,6 +178,7 @@ const EditProfile: NextPage = () => {
         <div className="flex items-center space-x-3">
           {avatarPreview ? (
             <Image
+              loader={() => avatarPreview}
               width={14}
               height={14}
               alt="avatar-preview"

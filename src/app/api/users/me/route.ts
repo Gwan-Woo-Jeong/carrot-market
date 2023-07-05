@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const session = await getSession(req, res);
 
   if (session.user) {
-    const { email, phone, name, avatarId } = await req.json();
+    const { email, phone, name, avatar } = await req.json();
 
     const currentUser = await client.user.findUnique({
       where: { id: session.user.id },
@@ -109,18 +109,18 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    if (avatarId) {
+    if (avatar) {
       await client.user.update({
         where: {
           id: session.user?.id,
         },
         data: {
-          avatar: avatarId,
+          avatar,
         },
       });
     }
 
-    createResponse(res, JSON.stringify({ ok: true }));
+    return createResponse(res, JSON.stringify({ ok: true }));
   } else {
     return createResponse(
       res,

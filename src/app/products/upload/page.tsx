@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import { Product } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import uploadToFirebase from "@/libs/client/upload";
+import useUser from "@/libs/client/useUser";
 
 interface UploadProductForm {
   name: string;
@@ -26,6 +28,7 @@ interface UploadProductMutation {
 
 const Upload: NextPage = () => {
   const { register, handleSubmit, watch } = useForm<UploadProductForm>();
+  const { user } = useUser();
   const [uploadProduct, { loading, data }] =
     useMutation<UploadProductMutation>("/api/products");
   const router = useRouter();
@@ -38,7 +41,10 @@ const Upload: NextPage = () => {
     photo,
   }: UploadProductForm) => {
     if (loading) return;
-    if (photo && photo.length > 0) {
+    if (photo && photo.length > 0 && user?.id) {
+      /*
+      Cloud Flare
+      
       const { uploadURL } = await (await fetch(`/api/files`)).json();
 
       const form = new FormData();
@@ -51,6 +57,17 @@ const Upload: NextPage = () => {
       ).json();
 
       uploadProduct({ name, price, description, photoId: id });
+      */
+
+      // Firebase
+      uploadToFirebase({
+        type: "product",
+        file: photo,
+        userId: user.id,
+        onComplete: (url) => {
+          uploadProduct({ name, price, description, image: url });
+        },
+      });
     } else {
       uploadProduct({ name, price, description });
     }
@@ -77,10 +94,13 @@ const Upload: NextPage = () => {
         <div>
           {photoPreview ? (
             <Image
+              width={480}
+              height={192}
+              loader={() => photoPreview}
               alt="photho-preview"
               src={photoPreview}
               className="w-full aspect-video h-46 rounded-md"
-            ></Image>
+            />
           ) : (
             <label className="w-full cursor-pointer text-gray-600 hover:border-orange-500 hover:text-orange-500 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
               <svg

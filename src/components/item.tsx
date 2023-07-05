@@ -28,7 +28,7 @@ export default function Item({
         </div>
       </div>
       <div className="flex space-x-2 items-end justify-end">
-        {hearts && (
+        {hearts ? (
           <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
             <svg
               className="w-4 h-4"
@@ -46,8 +46,8 @@ export default function Item({
             </svg>
             <span>{hearts}</span>
           </div>
-        )}
-        {comments && (
+        ) : null}
+        {comments ? (
           <div className="flex space-x-0.5 items-center text-sm  text-gray-600">
             <svg
               className="w-4 h-4"
@@ -65,7 +65,7 @@ export default function Item({
             </svg>
             <span>{comments}</span>
           </div>
-        )}
+        ) : null}
       </div>
     </Link>
   );

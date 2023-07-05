@@ -8,16 +8,16 @@ import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const res = new Response();
-  const { name, price, description, photoId } = await req.json();
+  const { name, price, description, image } = await req.json();
   const session = await getSession(req, res);
 
   if (session.user) {
     const product = await client.product.create({
       data: {
         name,
-        price,
+        price: +price,
         description,
-        image: photoId,
+        image,
         user: {
           connect: { id: session.user.id },
         },
