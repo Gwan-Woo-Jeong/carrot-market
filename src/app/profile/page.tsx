@@ -29,12 +29,11 @@ const Profile: NextPage = () => {
         <div className="flex items-center mt-4 space-x-3">
           {user?.avatar ? (
             <Image
-              loader={() => user.avatar!}
               alt={user?.avatar}
               width={16}
               height={16}
               src={user?.avatar}
-              className="w-16 h-16 bg-slate-500 rounded-full"
+              className="w-16 h-16 obeject-cover rounded-full"
             />
           ) : (
             <div className="w-16 h-16 bg-slate-500 rounded-full" />

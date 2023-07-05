@@ -67,9 +67,8 @@ const ItemDetail: NextPage<{ params: { id: string } }> = ({
               alt={data?.product.name ? data.product.name : "image"}
               width={400}
               height={96}
-              loader={() => data.product.image}
               src={data.product.image}
-              className="h-96 bg-slate-300"
+              className="h-96 object-contain mx-auto"
             />
           ) : (
             <div className="w-400 h-96 bg-gray-500" />
@@ -77,12 +76,11 @@ const ItemDetail: NextPage<{ params: { id: string } }> = ({
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
             {data?.product.user.avatar ? (
               <Image
-                loader={() => data.product.user.avatar!}
                 alt={data?.product.user.name ? data.product.user.name : "image"}
                 src={data.product.user.avatar}
                 width={12}
                 height={12}
-                className="w-12 h-12 rounded-full"
+                className="w-12 h-12 rounded-full object-contain"
               />
             ) : (
               <div className="w-12 h-12 bg-slate-300 rounded-full" />

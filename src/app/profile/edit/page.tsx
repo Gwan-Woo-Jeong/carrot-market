@@ -178,12 +178,11 @@ const EditProfile: NextPage = () => {
         <div className="flex items-center space-x-3">
           {avatarPreview ? (
             <Image
-              loader={() => avatarPreview}
               width={14}
               height={14}
               alt="avatar-preview"
               src={avatarPreview}
-              className="w-14 h-14 rounded-full bg-slate-500"
+              className="w-14 h-14 rounded-full object-cover"
             />
           ) : (
             <div className="w-14 h-14 rounded-full bg-slate-500" />

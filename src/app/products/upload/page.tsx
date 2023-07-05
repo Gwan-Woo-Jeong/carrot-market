@@ -91,15 +91,14 @@ const Upload: NextPage = () => {
   return (
     <Layout canGoBack title="Upload Product">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
-        <div>
+        <div className="flex">
           {photoPreview ? (
             <Image
               width={480}
               height={192}
-              loader={() => photoPreview}
               alt="photho-preview"
               src={photoPreview}
-              className="w-full aspect-video h-46 rounded-md"
+              className="w-full aspect-video h-46 rounded-md object-contain mx-auto"
             />
           ) : (
             <label className="w-full cursor-pointer text-gray-600 hover:border-orange-500 hover:text-orange-500 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
