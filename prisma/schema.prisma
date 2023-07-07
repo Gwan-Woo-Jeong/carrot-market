@@ -162,9 +162,9 @@ model Sale {
 
 model Purchase {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -197,15 +197,18 @@ enum Kind {
 }
 
 model Stream {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  name        String
-  description String    @db.MediumText
-  price       Int
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
-  messages    Message[]
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  description   String    @db.MediumText
+  price         Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+  messages      Message[]
+  cloudflareId  String?
+  cloudflareUrl String?
+  cloudflareKey String?
 
   @@index([userId])
 }
