@@ -13,6 +13,9 @@ export async function GET(
   const session = await getSession(req, res);
 
   if (session.user) {
+    // include : 테이블에 있는 모든 칼럼을 불러옴
+    // select : 테이블의 특정 칼럼만 불러옴
+
     const stream = await client.stream.findUnique({
       where: { id: +id.toString() },
       include: {
@@ -30,6 +33,14 @@ export async function GET(
         },
       },
     });
+
+    const isOwner = stream?.userId === session.user.id;
+
+    // 스트림이 로그인 유저가 방송하는 스트림이 아니면 key & url 지움
+    if (stream && !isOwner) {
+      stream.cloudflareKey = null;
+      stream.cloudflareUrl = null;
+    }
 
     if (!stream) {
       return createResponse(
