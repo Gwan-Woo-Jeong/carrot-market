@@ -99,7 +99,18 @@ const DetailStream: NextPage<{ params: { id: string } }> = ({
   return (
     <Layout canGoBack>
       <div className="py-10 px-4  space-y-4">
-        <div className="w-full relative overflow-hidden bg-slate-300 aspect-video"></div>
+        <div className="w-full relative overflow-hidden bg-slate-300 aspect-video">
+          {data?.stream.cloudflareId ? (
+            <iframe
+              className="w-full aspect-video rounded-md shadow-sm"
+              src={`https://iframe.videodelivery.net/${data?.stream.cloudflareId}`}
+              height="720"
+              width="1280"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen={true}
+            ></iframe>
+          ) : null}
+        </div>
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
             {data?.stream?.name}
