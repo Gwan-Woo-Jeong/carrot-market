@@ -1,6 +1,4 @@
 import { User } from "@prisma/client";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
 import useSWR from "swr";
 
 /*
@@ -29,19 +27,6 @@ interface ProfileResponse {
 
 export default function useUser() {
   const { data, error } = useSWR<ProfileResponse>("/api/users/me");
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    // 세션이 없을 경우 로그인 페이지로 이동
-    if (data && !data.ok && pathname !== "/enter") {
-      return router.replace("/enter");
-    }
-
-    if (data && data.ok && pathname === "enter") {
-      router.replace("/profile");
-    }
-  }, [data, router, pathname]);
 
   return { user: data?.profile, isLoading: !data && !error };
 }
