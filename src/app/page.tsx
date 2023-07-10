@@ -6,6 +6,7 @@ import FloatingButton from "@/components/floating-button";
 import Item from "@/components/item";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
+import { use } from "react";
 
 interface ProductResponse {
   ok: boolean;
@@ -16,8 +17,32 @@ export interface ProductWithHeart extends Product {
   _count: { fav: number };
 }
 
+const fetchProducts = async () => {
+  const res = await fetch("/api/products", {
+    cache: "no-store", // SSR (getServerSideProps)
+  });
+  return res.json();
+};
+
+const productsPromise = fetchProducts();
+
+// #19.6 getServerSideProps
+
+/*
+  - 페이지에서 getServerSideProps(서버 측 렌더링)라는 함수를 export
+  - Next.js는 getServerSideProps에서 반환된 데이터를 사용하여 각 요청에서 이 페이지를 미리 렌더링
+
+  export async function getServerSideProps(context) {
+    return {
+      props: {}, // will be passed to the page component as props
+    }
+  }
+ */
+
 const Home: NextPage = () => {
-  const { data } = useSWR<ProductResponse>("/api/products");
+  // const { data } = useSWR<ProductResponse>("/api/products");
+
+  const data: ProductResponse = use(productsPromise);
 
   return (
     <Layout title="홈" hasTabBar>
