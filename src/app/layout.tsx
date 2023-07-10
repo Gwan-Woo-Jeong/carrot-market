@@ -23,6 +23,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("APP IS RUNNING");
   return (
     <html lang="en">
       <body className={inter.className}>
