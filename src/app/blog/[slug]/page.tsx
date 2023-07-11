@@ -1,5 +1,9 @@
+import Layout from "@/components/layout";
 import { readdirSync } from "fs";
-import { NextPage } from "next";
+import matter from "gray-matter";
+import remarkHtml from "remark-html";
+import remarkParse from "remark-parse/lib";
+import { unified } from "unified";
 
 // #19.12 getStaticPaths
 /*
@@ -10,8 +14,46 @@ import { NextPage } from "next";
   - getStaticProps도 사용하는 동적 경로에서만 export 가능
  */
 
-const Post: NextPage = () => {
-  return <h1>hi</h1>;
+// #19.13 Dynamic getStaticProps
+/*
+  matter.read(filepath, options)
+  - 파일 시스템에서 파일을 동기적으로 읽고 front matter를 파싱
+  - matter()와 동일한 객체를 반환
+  - filepath에 읽을 파일의 경로를 지정
+  ex) const file = matter.read('./content/blog-post.md');
+
+  remark-html
+  - HTML serializing 지원을 추가하는 remark 플러그인
+ */
+
+// #19.14 Inner HTML
+/*
+  dangerouslySetInnerHTML
+  - 브라우저 DOM에서 innerHTML을 사용하기 위한 React의 대체 방법
+  - 일반적으로 코드에서 HTML을 설정하는 것은 사이트 간 스크립팅 공격에 쉽게 노출될 수 있기 때문에 위험
+*/
+
+interface PostProps {
+  params: {
+    slug: string;
+  };
+}
+
+const Post = async ({ params: { slug } }: PostProps) => {
+  const { content, data } = matter.read(`posts/${slug}.md`);
+  const { value } = await unified()
+    .use(remarkParse as any)
+    .use(remarkHtml as any)
+    .process(content);
+
+  return (
+    <Layout title={data.title} seoTitle={data.title}>
+      <div
+        className="blog-post-content"
+        dangerouslySetInnerHTML={{ __html: value }}
+      ></div>
+    </Layout>
+  );
 };
 
 export default Post;
