@@ -1,4 +1,7 @@
+"use client";
+
 import { cls } from "@/libs/client/utils";
+import Head from "next/head";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
@@ -19,6 +22,7 @@ interface LayoutProps {
   canGoBack?: boolean;
   hasTabBar?: boolean;
   children: React.ReactNode;
+  seoTitle?: string;
 }
 
 export default function Layout({
@@ -26,6 +30,7 @@ export default function Layout({
   canGoBack,
   hasTabBar,
   children,
+  seoTitle,
 }: LayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -35,6 +40,9 @@ export default function Layout({
   };
   return (
     <div>
+      <Head>
+        <title>{seoTitle} | Carrot Market </title>
+      </Head>
       <div className="bg-white w-full h-12 max-w-xl justify-center text-lg px-10 font-medium  fixed text-gray-800 border-b top-0  flex items-center">
         {canGoBack ? (
           <button onClick={onClick} className="absolute left-4">
