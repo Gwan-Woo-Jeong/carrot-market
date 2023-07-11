@@ -1,6 +1,7 @@
 import Layout from "@/components/layout";
 import { readdirSync, readFileSync } from "fs";
 import matter from "gray-matter";
+import Link from "next/link";
 
 // #19.10 getStaticProps
 /*
@@ -19,17 +20,19 @@ interface Post {
   title: string;
   date: string;
   category: string;
+  slug: string;
 }
 
 const getPosts = () => {
   // 디렉토리의 내용을 읽음
   return readdirSync("posts/").map((file) => {
     const content = readFileSync(`posts/${file}`, "utf-8"); // path의 내용을 반환
-    return matter(content).data as Post;
+    const [slug, _] = file.split(".");
+    return { ...matter(content).data, slug } as Post;
   });
 };
 
-const posts = getPosts();
+const posts = getPosts().reverse();
 
 export default function Blog() {
   return (
@@ -39,12 +42,14 @@ export default function Blog() {
       </h1>
       {posts.map((post, index) => (
         <div key={index} className="mb-5">
-          <span className="text-lg text-red-500">{post.title}</span>
-          <div>
-            <span>
-              {post.date} / {post.category}
-            </span>
-          </div>
+          <Link href={`/blog/${post.slug}`}>
+            <span className="text-lg text-red-500">{post.title}</span>
+            <div>
+              <span>
+                {post.date} / {post.category}
+              </span>
+            </div>
+          </Link>
         </div>
       ))}
     </Layout>
