@@ -1,6 +1,6 @@
 import client from "@/libs/server/client";
 import { createResponse, getSession } from "@/libs/server/session";
-import { NextRequest, userAgent } from "next/server";
+import { NextRequest } from "next/server";
 
 // #12.7 Geo Search
 
@@ -19,55 +19,46 @@ import { NextRequest, userAgent } from "next/server";
 
 export async function GET(req: NextRequest) {
   const res = new Response();
-  const session = await getSession(req, res);
 
   const latitude = req.nextUrl.searchParams.get("latitude");
   const longitude = req.nextUrl.searchParams.get("longitude");
 
-  if (session.user) {
-    const posts = await client.post.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
-          },
-        },
-        _count: {
-          select: {
-            wonderings: true,
-            answers: true,
-          },
+  const posts = await client.post.findMany({
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
         },
       },
-      ...{
-        ...(latitude &&
-          longitude && {
-            where: {
-              latitude: {
-                gte: parseFloat(latitude.toString()) - 0.01,
-                lte: parseFloat(latitude.toString()) + 0.01,
-              },
-              longitude: {
-                gte: parseFloat(longitude.toString()) - 0.01,
-                lte: parseFloat(longitude.toString()) + 0.01,
-              },
+      _count: {
+        select: {
+          wonderings: true,
+          answers: true,
+        },
+      },
+    },
+    ...{
+      ...(latitude &&
+        longitude && {
+          where: {
+            latitude: {
+              gte: parseFloat(latitude.toString()) - 0.01,
+              lte: parseFloat(latitude.toString()) + 0.01,
             },
-          }),
-      },
-    });
+            longitude: {
+              gte: parseFloat(longitude.toString()) - 0.01,
+              lte: parseFloat(longitude.toString()) + 0.01,
+            },
+          },
+        }),
+    },
+  });
 
-    return createResponse(res, JSON.stringify({ ok: true, posts }), {
-      status: 200,
-    });
-  } else {
-    return createResponse(
-      res,
-      JSON.stringify({ ok: false, message: "Please log in" }),
-      { status: 401 }
-    );
-  }
+  return createResponse(res, JSON.stringify({ ok: true, posts }), {
+    status: 200,
+  });
 }
 
 export async function POST(req: NextRequest) {

@@ -36,30 +36,20 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const res = new Response();
-  const session = await getSession(req, res);
-
-  if (session.user) {
-    // product를 가리키고 있는 fav의 개수(_count)를 추가
-    const products = await client.product.findMany({
-      include: {
-        _count: {
-          select: {
-            fav: true,
-          },
+  // product를 가리키고 있는 fav의 개수(_count)를 추가
+  const products = await client.product.findMany({
+    include: {
+      _count: {
+        select: {
+          fav: true,
         },
       },
-    });
+    },
+  });
 
-    return createResponse(res, JSON.stringify({ ok: true, products }), {
-      status: 200,
-    });
-  } else {
-    return createResponse(
-      res,
-      JSON.stringify({ ok: false, message: "Please log in" }),
-      { status: 401 }
-    );
-  }
+  return createResponse(res, JSON.stringify({ ok: true, products }), {
+    status: 200,
+  });
 }

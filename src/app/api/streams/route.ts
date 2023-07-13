@@ -7,40 +7,30 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   const res = new Response();
 
-  const session = await getSession(req, res);
+  const size = req.nextUrl.searchParams.get("size");
+  const page = req.nextUrl.searchParams.get("page");
 
-  if (session.user) {
-    const size = req.nextUrl.searchParams.get("size");
-    const page = req.nextUrl.searchParams.get("page");
+  const sizeVal = size ? +size : 10;
+  const pageVal = page ? +page : 1;
 
-    const sizeVal = size ? +size : 10;
-    const pageVal = page ? +page : 1;
+  const streams = await client.stream.findMany({
+    take: sizeVal, // 전달할 레코드의 개수
+    skip: (pageVal - 1) * sizeVal, // 이전 개수의 레코드를 생략
+  });
 
-    const streams = await client.stream.findMany({
-      take: sizeVal, // 전달할 레코드의 개수
-      skip: (pageVal - 1) * sizeVal, // 이전 개수의 레코드를 생략
-    });
+  const streamCount = await client.stream.count();
 
-    const streamCount = await client.stream.count();
-
-    return createResponse(
-      res,
-      JSON.stringify({
-        ok: true,
-        streams,
-        pages: Math.ceil(streamCount / sizeVal),
-      }),
-      {
-        status: 200,
-      }
-    );
-  } else {
-    return createResponse(
-      res,
-      JSON.stringify({ ok: false, message: "Please log in" }),
-      { status: 401 }
-    );
-  }
+  return createResponse(
+    res,
+    JSON.stringify({
+      ok: true,
+      streams,
+      pages: Math.ceil(streamCount / sizeVal),
+    }),
+    {
+      status: 200,
+    }
+  );
 }
 
 // #17.2 Stream API
