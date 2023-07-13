@@ -34,7 +34,6 @@ export default function useCoords() {
     coords: { latitude, longitude },
   }: GeolocationPosition) => {
     setCoords({ latitude, longitude });
-    console.log(coords);
   };
 
   useEffect(() => {
