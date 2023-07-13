@@ -49,12 +49,16 @@ const CommunityPostDetail: NextPage<{ params: { id: string } }> = ({
   const { register, handleSubmit, reset } = useForm<AnswerForm>();
 
   const { data, error, mutate } = useSWR<CommunityPostResponse>(
-    id ? `/api/posts/${id}` : null
+    id ? process.env.NEXT_PUBLIC_HOST_URL + `/api/posts/${id}` : null
   );
 
-  const [wonder] = useMutation(`/api/posts/${id}/wonder`);
+  const [wonder] = useMutation(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/posts/${id}/wonder`
+  );
   const [sendAnswer, { data: answerData, loading: answerLoading }] =
-    useMutation<AnswerResponse>(`/api/posts/${id}/answers`);
+    useMutation<AnswerResponse>(
+      process.env.NEXT_PUBLIC_HOST_URL + `/api/posts/${id}/answers`
+    );
 
   const onWonderClick = () => {
     if (!data) return;

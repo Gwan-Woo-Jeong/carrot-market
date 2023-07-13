@@ -18,7 +18,9 @@ interface ProductListResponse {
 }
 
 export default function ProductList({ kind }: ProductListProps) {
-  const { data } = useSWR<ProductListResponse>(`/api/users/me/${kind}`);
+  const { data } = useSWR<ProductListResponse>(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/users/me/${kind}`
+  );
 
   return data ? (
     <>

@@ -44,18 +44,24 @@ const ItemDetail: NextPage<{ params: { id: string } }> = ({
   params: { id },
 }) => {
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
-    id ? `/api/products/${id}` : null
+    id ? process.env.NEXT_PUBLIC_HOST_URL + `/api/products/${id}` : null
   );
 
   const { mutate } = useSWRConfig();
 
-  const [toggleFav] = useMutation(`/api/products/${id}/fav`);
+  const [toggleFav] = useMutation(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/products/${id}/fav`
+  );
 
   const onFavClick = () => {
     toggleFav({});
     if (!data) return;
     boundMutate({ ...data, isLiked: !data.isLiked }, false);
-    mutate("/api/users/me", (prev) => ({ ...prev, ok: false }), false);
+    mutate(
+      process.env.NEXT_PUBLIC_HOST_URL + "/api/users/me",
+      (prev) => ({ ...prev, ok: false }),
+      false
+    );
   };
 
   return (

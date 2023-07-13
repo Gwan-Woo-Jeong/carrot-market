@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { Post, User } from "@prisma/client";
 import useCoords from "@/libs/client/useCoords";
 import { use } from "react";
+import { getTimeDifference } from "@/libs/client/utils";
 
 interface PostResponse {
   ok: boolean;
@@ -40,7 +41,7 @@ interface PostWithUser extends Post {
  */
 
 const fetchPosts = async () => {
-  const res = await fetch("/api/posts", {
+  const res = await fetch(process.env.NEXT_PUBLIC_HOST_URL + "/api/posts", {
     next: {
       revalidate: 10, // 10초마다 static 페이지 최신화 (getStaticProps) = ISR (Incremental Static Regeneration)
     },
@@ -57,7 +58,7 @@ const Community: NextPage = () => {
   // const { latitude, longitude } = useCoords();
   // const { data } = useSWR<PostResponse>(
   //   latitude && longitude
-  //     ?  `/api/posts?latitude=${latitude}&longitude=${longitude}`
+  //     ?  process.env.NEXT_PUBLIC_HOST_URL + `/api/posts?latitude=${latitude}&longitude=${longitude}`
   //     : null
   // );
 
@@ -81,7 +82,7 @@ const Community: NextPage = () => {
             </div>
             <div className="mt-5 px-4 flex items-center justify-between w-full text-gray-500 font-medium text-xs">
               <span>{post.user.name}</span>
-              <span>{post.createdAt}</span>
+              <span>{getTimeDifference(post.createdAt)}</span>
             </div>
             <div className="flex px-4 space-x-5 mt-3 text-gray-700 py-2.5 border-t w-full">
               <span className="flex space-x-2 items-center text-sm">

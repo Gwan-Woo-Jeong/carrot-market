@@ -21,7 +21,9 @@ interface ReviewsResponse {
 
 const Profile: NextPage = () => {
   const { user } = useUser();
-  const { data } = useSWR<ReviewsResponse>("/api/reviews");
+  const { data } = useSWR<ReviewsResponse>(
+    process.env.NEXT_PUBLIC_HOST_URL + "/api/reviews"
+  );
 
   return (
     <Layout hasTabBar title="나의 캐럿">

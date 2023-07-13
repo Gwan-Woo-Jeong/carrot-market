@@ -1,5 +1,3 @@
-"use client";
-
 import Layout from "@/components/layout";
 import type { NextPage } from "next";
 import FloatingButton from "@/components/floating-button";
@@ -18,7 +16,7 @@ export interface ProductWithHeart extends Product {
 }
 
 const fetchProducts = async () => {
-  const res = await fetch("/api/products", {
+  const res = await fetch(process.env.NEXT_PUBLIC_HOST_URL + "/api/products", {
     cache: "no-store", // SSR (getServerSideProps)
   });
   return res.json();
@@ -40,7 +38,7 @@ const productsPromise = fetchProducts();
  */
 
 const Home: NextPage = () => {
-  // const { data } = useSWR<ProductResponse>("/api/products");
+  // const { data } = useSWR<ProductResponse>(process.env.NEXT_PUBLIC_HOST_URL + "/api/products");
 
   const data: ProductResponse = use(productsPromise);
 

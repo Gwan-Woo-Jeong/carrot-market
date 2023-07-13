@@ -29,7 +29,9 @@ interface StreamsResponse {
 const getKey = (pageIndex: number, previousPageData: StreamsResponse) => {
   if (pageIndex === 0) return `api/streams?page=1`;
   if (pageIndex + 1 > previousPageData.pages) return null;
-  return `/api/streams?page=${pageIndex + 1}`;
+  return (
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/streams?page=${pageIndex + 1}`
+  );
 };
 
 const Streams: NextPage = () => {

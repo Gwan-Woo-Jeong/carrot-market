@@ -36,8 +36,9 @@ interface CreateResponse {
 }
 
 const Create: NextPage = () => {
-  const [createStream, { loading, data }] =
-    useMutation<CreateResponse>(`/api/streams`);
+  const [createStream, { loading, data }] = useMutation<CreateResponse>(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/streams`
+  );
   const { register, handleSubmit } = useForm<CreateForm>();
   const router = useRouter();
 

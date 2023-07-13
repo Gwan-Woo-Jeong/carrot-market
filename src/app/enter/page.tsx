@@ -27,13 +27,16 @@ interface mutationResult {
 }
 
 const Enter: NextPage = () => {
-  const [enter, { loading, data, error }] =
-    useMutation<mutationResult>("/api/users/enter");
+  const [enter, { loading, data, error }] = useMutation<mutationResult>(
+    process.env.NEXT_PUBLIC_HOST_URL + "/api/users/enter"
+  );
 
   const [
     confirmToken,
     { loading: tokenLoading, data: tokenData, error: tokenError },
-  ] = useMutation<mutationResult>("/api/users/confirm");
+  ] = useMutation<mutationResult>(
+    process.env.NEXT_PUBLIC_HOST_URL + "/api/users/confirm"
+  );
 
   const [method, setMethod] = useState<"email" | "phone">("email");
 

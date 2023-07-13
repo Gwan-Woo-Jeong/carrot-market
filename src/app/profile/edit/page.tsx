@@ -60,8 +60,9 @@ const EditProfile: NextPage = () => {
     watch,
   } = useForm<EditProfileForm>();
 
-  const [editProfile, { data, loading }] =
-    useMutation<EditProfileResponse>(`/api/users/me`);
+  const [editProfile, { data, loading }] = useMutation<EditProfileResponse>(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/users/me`
+  );
 
   const router = useRouter();
 
@@ -108,7 +109,7 @@ const EditProfile: NextPage = () => {
       CloudFlare 
 
       // CF URL 요청
-      const { uploadURL } = await (await fetch(`/api/files`)).json();
+      const { uploadURL } = await (await fetch(process.env.NEXT_PUBLIC_HOST_URL + `/api/files`)).json();
 
       const form = new FormData();
 
