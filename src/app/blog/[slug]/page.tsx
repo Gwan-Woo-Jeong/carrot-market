@@ -39,8 +39,11 @@ interface PostProps {
   };
 }
 
+export const dynamicParams = false;
+
 const Post = async ({ params: { slug } }: PostProps) => {
   const { content, data } = matter.read(`posts/${slug}.md`);
+
   const { value } = await unified()
     .use(remarkParse as any)
     .use(remarkHtml as any)
@@ -58,13 +61,9 @@ const Post = async ({ params: { slug } }: PostProps) => {
 
 export default Post;
 
-export function getStaticPaths() {
-  const files = readdirSync("./posts").map((file) => {
-    const [name, extension] = file.split(".");
+export function generateStaticParams() {
+  return readdirSync("./posts").map((file) => {
+    const [name, _] = file.split(".");
     return { params: { slug: name } };
   });
-  return {
-    paths: files,
-    fallback: false,
-  };
 }
