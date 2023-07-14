@@ -81,6 +81,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    await fetch(
+      process.env.NEXT_PUBLIC_HOST_URL + "/api/revalidate?path=community"
+    );
+
     return createResponse(res, JSON.stringify({ ok: true, post }), {
       status: 201,
     });

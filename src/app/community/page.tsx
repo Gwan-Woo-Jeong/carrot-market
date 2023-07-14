@@ -1,12 +1,10 @@
-"use client";
-
 import Layout from "@/components/layout";
 import type { NextPage } from "next";
 import Link from "next/link";
 import FloatingButton from "../../components/floating-button";
-import useSWR from "swr";
+// import useSWR from "swr";
 import { Post, User } from "@prisma/client";
-import useCoords from "@/libs/client/useCoords";
+// import useCoords from "@/libs/client/useCoords";
 import { use } from "react";
 import { getTimeDifference } from "@/libs/client/utils";
 
@@ -41,11 +39,14 @@ interface PostWithUser extends Post {
  */
 
 const fetchPosts = async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_HOST_URL + "/api/posts", {
-    next: {
-      revalidate: 10, // 10초마다 static 페이지 최신화 (getStaticProps) = ISR (Incremental Static Regeneration)
-    },
-  });
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_HOST_URL + "/api/posts"
+    // {
+    //   next: {
+    //     revalidate: 10, // 10초마다 static 페이지 최신화 (getStaticProps) = ISR (Incremental Static Regeneration)
+    //   },
+    // }
+  );
 
   return res.json();
 };
