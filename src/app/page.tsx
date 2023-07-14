@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { Product } from "@prisma/client";
 import { use } from "react";
 
-interface ProductResponse {
+export interface ProductResponse {
   ok: boolean;
   products: ProductWithHeart[];
 }
