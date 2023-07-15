@@ -11,23 +11,37 @@
     - Suspense는 내부의 컴포넌트의 fetch 함수가 Promise를 반환하면 성공/실패를 확인한 후 컴포넌트를 렌더링
  */
 
+// #12.3 Throwing Our Promise
+
 import { Suspense } from "react";
 import RootLayout from "./layout";
 
 let finished = false;
 
-function List() {
-  if (!finished) {
-    throw Promise.all([
-      new Promise((resolve) => setTimeout(resolve, 15000)),
-      new Promise((resolve) => {
-        finished = true;
-        resolve("");
-      }),
-    ]);
+const cache: any = {};
+
+function fetchData(url: string) {
+  if (!cache[url]) {
+    throw fetch(url)
+      .then((r) => r.json())
+      .then((json) => (cache[url] = json.slice(0, 10)));
   }
 
-  return <ul>xxxxx</ul>;
+  return cache[url];
+}
+
+function List() {
+  const coins = fetchData("https://api.coinpaprika.com/v1/coins");
+
+  return (
+    <ul>
+      {coins.map((coin: any) => (
+        <li key={coin.id}>
+          {coin.name} / {coin.symbol}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default function Coins() {
