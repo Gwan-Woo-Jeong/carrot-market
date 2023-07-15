@@ -22,6 +22,8 @@ interface ironSessionData {
  */
 
 export async function middleware(req: NextRequest, ev: NextFetchEvent) {
+  if (req.url.includes("/coins")) return;
+
   const cookie = req.cookies.get("Carrot Session");
 
   // 세션 쿠키가 존재하지 않으면 로그인 페이지로 강제 이동
