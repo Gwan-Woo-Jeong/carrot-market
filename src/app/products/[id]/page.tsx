@@ -135,13 +135,15 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
           )}
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
             {data?.product.user.avatar ? (
-              <Image
-                alt={data?.product.user.name ? data.product.user.name : "image"}
-                src={data.product.user.avatar}
-                width={12}
-                height={12}
-                className="w-12 h-12 rounded-full object-contain"
-              />
+              <div className="relative w-12 h-12 rounded-full object-cover">
+                <Image
+                  fill
+                  alt={
+                    data?.product.user.name ? data.product.user.name : "image"
+                  }
+                  src={data.product.user.avatar}
+                />
+              </div>
             ) : (
               <div className="w-12 h-12 bg-slate-300 rounded-full" />
             )}

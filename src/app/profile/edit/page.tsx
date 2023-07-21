@@ -178,13 +178,9 @@ const EditProfile: NextPage = () => {
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
           {avatarPreview ? (
-            <Image
-              width={14}
-              height={14}
-              alt="avatar-preview"
-              src={avatarPreview}
-              className="w-14 h-14 rounded-full object-cover"
-            />
+            <div className="relative w-14 h-14 rounded-full object-cover">
+              <Image fill alt="avatar-preview" src={avatarPreview} />
+            </div>
           ) : (
             <div className="w-14 h-14 rounded-full bg-slate-500" />
           )}

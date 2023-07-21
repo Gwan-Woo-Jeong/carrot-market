@@ -32,13 +32,9 @@ const UserProfile = () => {
   return (
     <>
       {user?.avatar ? (
-        <Image
-          alt={user?.avatar}
-          width={16}
-          height={16}
-          src={user?.avatar}
-          className="w-16 h-16 obeject-cover rounded-full"
-        />
+        <div className="relative w-16 h-16 obeject-cover rounded-full">
+          <Image fill alt={user?.avatar} src={user?.avatar} />
+        </div>
       ) : (
         <div className="w-16 h-16 bg-slate-500 rounded-full" />
       )}
