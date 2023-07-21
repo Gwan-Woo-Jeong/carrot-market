@@ -10,6 +10,12 @@ interface UseMutationState<T> {
 
 type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
 
+interface UseMutationOptions {
+  method?: "POST" | "PUT" | "PATCH" | "DELETE";
+  onSuccess?: () => void;
+  onFailure?: () => void;
+}
+
 /*
     8.2 -8.3 : Clean Code
 
@@ -18,7 +24,8 @@ type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
  */
 
 export default function useMutation<T = any>(
-  url: string
+  url: string,
+  options?: UseMutationOptions
 ): UseMutationResult<T> {
   const [state, setState] = useState<UseMutationState<T>>({
     loading: false,
@@ -29,15 +36,21 @@ export default function useMutation<T = any>(
   function mutation(data: any) {
     setState((prev) => ({ ...prev, loading: true }));
     fetch(url, {
-      method: "POST",
+      method: options?.method || "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
       .then((response) => response.json().catch(() => {}))
-      .then((data) => setState((prev) => ({ ...prev, data })))
-      .catch((error) => setState((prev) => ({ ...prev, error })))
+      .then((data) => {
+        setState((prev) => ({ ...prev, data }));
+        if (options?.onSuccess) options.onSuccess();
+      })
+      .catch((error) => {
+        setState((prev) => ({ ...prev, error }));
+        if (options?.onFailure) options.onFailure();
+      })
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
   }
 

@@ -6,8 +6,9 @@ import Message from "@/components/message";
 import useSWR from "swr";
 import useMutation from "@/libs/client/useMutation";
 import { useForm } from "react-hook-form";
-import { ChatMessages, ChatRoom } from "@prisma/client";
+import { ChatMessages, ChatRoom, Product } from "@prisma/client";
 import useUser from "@/libs/client/useUser";
+import { useRef } from "react";
 
 interface mutationResult {
   ok: boolean;
@@ -37,6 +38,7 @@ interface ChatDetailWithUser extends ChatRoom {
     name: string;
   };
   chatMessages: ChatMessageWithUser[];
+  product: Product;
 }
 
 interface ChatDetailResponse {
@@ -57,6 +59,36 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
   const [sendChat] = useMutation<mutationResult>(
     process.env.NEXT_PUBLIC_HOST_URL + `/api/chats/${id}`
   );
+
+  const [updateStatus] = useMutation<mutationResult>(
+    process.env.NEXT_PUBLIC_HOST_URL +
+      `/api/products/${data?.chatRoom.product.id}`,
+    { method: "PATCH" }
+  );
+
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateStatus({ status: e.target.value });
+    if (!data) return;
+    mutate(
+      {
+        ok: true,
+        chatRoom: {
+          ...data.chatRoom,
+          product: {
+            ...data.chatRoom.product,
+            status: e.target.value,
+          },
+        },
+      },
+      false
+    );
+  };
 
   const onMessageValid = async (validForm: ChatMessageForm) => {
     sendChat(validForm);
@@ -87,6 +119,7 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
       },
       false
     );
+    scrollToBottom();
   };
 
   const getTitle = (data?: ChatDetailResponse) => {
@@ -104,7 +137,12 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
   };
 
   return (
-    <Layout canGoBack title={getTitle(data)}>
+    <Layout
+      canGoBack
+      title={getTitle(data)}
+      product={data?.chatRoom.product}
+      handleSelect={handleSelect}
+    >
       <div className="py-10 pb-16 px-4 space-y-4">
         {data?.chatRoom.chatMessages.map((chatMessage) => (
           <Message
@@ -114,11 +152,12 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
             reversed={user?.id !== chatMessage.user.id}
           />
         ))}
+        <div ref={messagesEndRef} />
         <form
           onSubmit={handleSubmit(onMessageValid)}
           className="fixed py-2 bg-white bottom-0 inset-x-0"
         >
-          <div className="flex relative max-w-md items-center  w-full mx-auto">
+          <div className="flex relative max-w-md items-center w-full mx-auto">
             <input
               {...register("message", { required: true })}
               type="text"

@@ -75,3 +75,23 @@ export async function GET(
     }
   );
 }
+
+export async function PATCH(
+  req: NextRequest,
+  { params: { id } }: { params: { id: string } }
+) {
+  const res = new Response();
+
+  const { status } = await req.json();
+
+  const product = await client.product.update({
+    where: { id: +id.toString() },
+    data: {
+      status,
+    },
+  });
+
+  return createResponse(res, JSON.stringify({ ok: true, product }), {
+    status: 200,
+  });
+}
