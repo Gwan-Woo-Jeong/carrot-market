@@ -75,8 +75,12 @@ model Product {
   records     Record[]
   chatRooms   ChatRoom[]
   status      String     @default("sale") // sale, reserve, sold
+  reservedAt  DateTime?
+  review      Review?    @relation(fields: [reviewId], references: [id])
+  reviewId    Int?
 
   @@index([userId])
+  @@index([reviewId])
 }
 
 model Post {
@@ -122,16 +126,17 @@ model Wondering {
 }
 
 model Review {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  review       String   @db.MediumText
+  id           Int       @id @default(autoincrement())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  review       String    @db.MediumText
   //  User를 두 번 가리키고 있는 상황 -> 각 관계의 이름을 명시해주어야 함
-  createdBy    User     @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade) // 리뷰를 작성한 유저
+  createdBy    User      @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade) // 리뷰를 작성한 유저
   createdById  Int
-  createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade) // 리뷰를 받은 유저
+  createdFor   User      @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade) // 리뷰를 받은 유저
   createdForId Int
-  score        Int      @default(0)
+  score        Int       @default(0)
+  products     Product[]
 
   @@index([createdById])
   @@index([createdForId])

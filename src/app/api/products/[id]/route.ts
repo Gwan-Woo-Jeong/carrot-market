@@ -82,12 +82,16 @@ export async function PATCH(
 ) {
   const res = new Response();
 
-  const { status } = await req.json();
+  let data = await req.json();
+
+  if (data.status !== "reserve") {
+    data.reservedAt = null;
+  }
 
   const product = await client.product.update({
     where: { id: +id.toString() },
     data: {
-      status,
+      ...data,
     },
   });
 

@@ -21,7 +21,7 @@ export default function Message({
     >
       {avatarUrl ? (
         <div className="relative w-8 h-8 rounded-full object-cover">
-          <Image fill alt="avatar-preview" src={avatarUrl} />
+          <Image className="z-[-1]" fill alt="avatar-preview" src={avatarUrl} />
         </div>
       ) : (
         <div className="w-8 h-8 rounded-full bg-slate-400" />

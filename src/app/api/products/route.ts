@@ -40,6 +40,11 @@ export async function GET() {
   const res = new Response();
   // product를 가리키고 있는 fav의 개수(_count)를 추가
   const products = await client.product.findMany({
+    where: {
+      NOT: {
+        status: "sold",
+      },
+    },
     include: {
       _count: {
         select: {

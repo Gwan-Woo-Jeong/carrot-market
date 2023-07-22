@@ -46,6 +46,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <SWRConfig value={{ fetcher }}>
           <div className="w-full max-w-lg mx-auto">{children}</div>
+          <div id="modal-root" />
           {/* <Script
             src="https://developers.kakao.com/sdk/js/kakao.js"
             strategy="lazyOnload"

@@ -1,10 +1,13 @@
 "use client";
 
 import { cls } from "@/libs/client/utils";
+import { Product } from "@prisma/client";
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import Button from "./button";
 
 /*
   #5.16 Layout part One
@@ -23,6 +26,9 @@ interface LayoutProps {
   hasTabBar?: boolean;
   children: React.ReactNode;
   seoTitle?: string;
+  product?: Product;
+  handleSelect?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onClickWriteReview?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function Layout({
@@ -31,6 +37,9 @@ export default function Layout({
   hasTabBar,
   children,
   seoTitle,
+  product,
+  handleSelect,
+  onClickWriteReview,
 }: LayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,12 +47,24 @@ export default function Layout({
   const onClick = () => {
     router.back();
   };
+
+  const selectList = [
+    { status: "sale", label: "판매중" },
+    { status: "reserve", label: "예약중" },
+    { status: "sold", label: "판매완료" },
+  ];
+
+  const getReserveData = (reservedAt: string) => {
+    const splitted = reservedAt.split("T");
+    return `${splitted[0]}\n${splitted[1].slice(0, 5)}`;
+  };
+
   return (
     <div>
       <Head>
         <title>{seoTitle} | Carrot Market </title>
       </Head>
-      <div className="bg-white w-full h-12 max-w-xl justify-center text-lg px-10 font-medium  fixed text-gray-800 border-b top-0  flex items-center">
+      <div className="bg-white w-full h-12 max-w-lg justify-center text-lg px-10 font-medium  fixed text-gray-800 border-b top-0  flex items-center z-3">
         {canGoBack ? (
           <button onClick={onClick} className="absolute left-4">
             <svg
@@ -66,7 +87,76 @@ export default function Layout({
           <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
         ) : null}
       </div>
-      <div className={cls("pt-12", hasTabBar ? "pb-24" : "")}>{children}</div>
+      {product ? (
+        <div className="bg-white w-full h-32 max-w-lg justify-center item-center text-lg px-10 font-medium fixed text-gray-800 top-12 flex items-center z-3">
+          <div className="flex items-center w-full text-sm text-gray-700 p-3 border border-gray-300 rounded-md space-x-4">
+            <div className="relative w-16 h-16 rounded-lg object-cover bg-slate-400">
+              {product.image ? (
+                <Image fill alt="avatar-preview" src={product.image} />
+              ) : null}
+            </div>
+            <div className="flex-1 py-1 flex flex-col justify-between">
+              <div className="flex justify-between items-center">
+                <span
+                  className={cls(
+                    "text-lg font-bold",
+                    product.status === "sold"
+                      ? "line-through text-gray-500"
+                      : ""
+                  )}
+                >
+                  {product.name}
+                </span>
+                {product.status ? (
+                  <select
+                    disabled={product.status === "sold"}
+                    className="border-none pr-8 focus:ring-0"
+                    onChange={handleSelect}
+                    value={product.status}
+                  >
+                    {selectList.map((item) => (
+                      <option value={item.status} key={item.status}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+              </div>
+              <div className="flex justify-between items-center">
+                <span
+                  className={cls(
+                    "text-lg",
+                    product.status === "sold"
+                      ? "line-through text-gray-500"
+                      : ""
+                  )}
+                >
+                  ${product.price}
+                </span>
+                {product?.status === "reserve" && product?.reservedAt ? (
+                  <span className="pr-4 text-slate-500">
+                    {getReserveData(product.reservedAt as any)}
+                  </span>
+                ) : product?.status === "sold" ? (
+                  <Button
+                    onClick={onClickWriteReview}
+                    disabled={Boolean(product.reviewId)}
+                    small
+                    text={
+                      "리뷰 " + (Boolean(product.reviewId) ? "완료" : "쓰기")
+                    }
+                  />
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      <div
+        className={cls(product ? "pt-36" : "pt-12", hasTabBar ? "pb-24" : "")}
+      >
+        {children}
+      </div>
       {hasTabBar ? (
         <nav className="bg-white max-w-xl text-gray-700 border-t fixed bottom-0 w-full px-10 pb-5 pt-3 flex justify-between text-xs">
           <Link

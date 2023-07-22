@@ -36,7 +36,11 @@ export async function GET(
           },
         },
       },
-      product: true,
+      product: {
+        include: {
+          review: true,
+        },
+      },
     },
   });
 
