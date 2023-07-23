@@ -12,7 +12,7 @@ export interface ProductResponse {
 }
 
 export interface ProductWithHeart extends Product {
-  _count: { fav: number };
+  _count: { fav: number; chatRooms: number };
 }
 
 const fetchProducts = async () => {
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
             title={product.name}
             price={product.price}
             image={product.image}
-            comments={1}
+            comments={product._count.chatRooms}
             hearts={product._count.fav}
           />
         ))}

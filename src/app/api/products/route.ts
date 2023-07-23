@@ -49,6 +49,7 @@ export async function GET() {
       _count: {
         select: {
           fav: true,
+          chatRooms: true,
         },
       },
     },
