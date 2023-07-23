@@ -12,7 +12,8 @@ type UseMutationResult<T> = [(data: any) => void, UseMutationState<T>];
 
 interface UseMutationOptions {
   method?: "POST" | "PUT" | "PATCH" | "DELETE";
-  onSuccess?: () => void;
+  callback?: () => void;
+  onSuccess?: (data: any) => void;
   onFailure?: () => void;
 }
 
@@ -35,6 +36,8 @@ export default function useMutation<T = any>(
 
   function mutation(data: any) {
     setState((prev) => ({ ...prev, loading: true }));
+    if (options?.callback) options.callback();
+
     fetch(url, {
       method: options?.method || "POST",
       headers: {
@@ -45,7 +48,7 @@ export default function useMutation<T = any>(
       .then((response) => response.json().catch(() => {}))
       .then((data) => {
         setState((prev) => ({ ...prev, data }));
-        if (options?.onSuccess) options.onSuccess();
+        if (options?.onSuccess) options.onSuccess(data);
       })
       .catch((error) => {
         setState((prev) => ({ ...prev, error }));

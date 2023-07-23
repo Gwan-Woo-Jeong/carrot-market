@@ -9,6 +9,8 @@ import { cls } from "@/libs/client/utils";
 import Image from "next/image";
 import LikeButton from "@/components/likeButton";
 import { ProductResponse } from "@/app/page";
+import useUser from "@/libs/client/useUser";
+import ButtonTab from "@/components/buttonTab";
 
 /*
   #11.8 Bound Mutations
@@ -123,13 +125,14 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
       <div className="px-4  py-4">
         <div className="mb-8">
           {data?.product.image ? (
-            <Image
-              alt={data?.product.name ? data.product.name : "image"}
-              width={400}
-              height={96}
-              src={data.product.image}
-              className="h-96 object-contain mx-auto"
-            />
+            <div className="relative h-[400px] bg-black">
+              <Image
+                fill
+                alt={data?.product.name ? data.product.name : "image"}
+                src={data.product.image}
+                className="object-cover mx-auto"
+              />
+            </div>
           ) : (
             <div className="w-400 h-96 bg-gray-500" />
           )}
@@ -159,6 +162,10 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
               </Link>
             </div>
           </div>
+          <ButtonTab
+            productId={data?.product.id}
+            sellerId={data?.product.userId}
+          />
           <div className="mt-5">
             <h1 className="text-3xl font-bold text-gray-900">
               {data?.product?.name}
@@ -167,10 +174,6 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
               ${data?.product?.price}
             </span>
             <p className=" my-6 text-gray-700">{data?.product?.description}</p>
-            <div className="flex items-center justify-between space-x-2">
-              <Button large text="Talk to seller" />
-              <LikeButton id={id} isLiked={data?.isLiked} />
-            </div>
           </div>
         </div>
         <div>

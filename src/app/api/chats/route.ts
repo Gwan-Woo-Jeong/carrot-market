@@ -53,8 +53,16 @@ export async function POST(req: NextRequest) {
 
   const { productId, guestId } = await req.json();
 
-  const chatRoom = await client.chatRoom.create({
-    data: {
+  // 상품 & 판매자가 일치하는 채팅방이 있으면 찾기
+  // 없으면 새로 생성 
+  const chatRoom = await client.chatRoom.upsert({
+    where: {
+      productId_guestId: {
+        productId,
+        guestId,
+      },
+    },
+    create: {
       product: {
         connect: {
           id: productId,
@@ -71,6 +79,7 @@ export async function POST(req: NextRequest) {
         },
       },
     },
+    update: {},
   });
 
   return createResponse(res, JSON.stringify({ ok: true, chatRoom }), {

@@ -249,6 +249,7 @@ model ChatRoom {
   product      Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId    Int
 
+  @@unique([productId, guestId])
   @@index([hostId])
   @@index([guestId])
   @@index([productId])
