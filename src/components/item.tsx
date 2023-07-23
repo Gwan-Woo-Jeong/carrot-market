@@ -25,13 +25,14 @@ export default function Item({
     >
       <div className="flex space-x-4">
         {image ? (
-          <Image
-            className="object-contain w-20 h-20 rounded-md"
-            alt={title}
-            width={20}
-            height={20}
-            src={image}
-          />
+          <div className="relative w-20 h-20">
+            <Image
+              fill
+              className="object-cover rounded-md"
+              alt={title}
+              src={image}
+            />
+          </div>
         ) : (
           <div className="w-20 h-20 bg-gray-400 rounded-md" />
         )}

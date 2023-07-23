@@ -1,26 +1,21 @@
 "use client";
 
 import useMutation from "@/libs/client/useMutation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cls } from "../libs/client/utils";
 
 interface ButtonProps {
-  id: string;
+  id: number;
   isLiked?: boolean;
 }
 
 export default function LikeButton({ id, isLiked: propIsLiked }: ButtonProps) {
   const [isLiked, setIsLike] = useState(propIsLiked);
 
-  const [toggleFav, { data }] = useMutation(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/products/${id}/fav`
+  const [toggleFav] = useMutation(
+    process.env.NEXT_PUBLIC_HOST_URL + `/api/products/${id}/fav`,
+    { callback: () => setIsLike((prev) => !prev) }
   );
-
-  useEffect(() => {
-    if (data && data.ok) {
-      setIsLike((prev) => !prev);
-    }
-  }, [data]);
 
   return (
     <button
@@ -35,7 +30,7 @@ export default function LikeButton({ id, isLiked: propIsLiked }: ButtonProps) {
       {isLiked ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
+          className="h-6 w-6"
           viewBox="0 0 20 20"
           fill="currentColor"
         >

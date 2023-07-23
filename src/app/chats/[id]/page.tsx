@@ -78,7 +78,7 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
   const [isModalVisible, setIsModalVisible] = useState({
     reserve: false,
     sold: false,
-    review: true,
+    review: false,
   });
 
   const [reserveDate, setReserveDate] = useState(hourLaterDate);

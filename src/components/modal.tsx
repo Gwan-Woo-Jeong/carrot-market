@@ -22,7 +22,7 @@ export default function Modal({ isVisible, children, onClose }: ModalProps) {
   const modalContent = isVisible ? (
     <div
       onClick={handleClose}
-      className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-center bg-black bg-opacity-70"
+      className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-center bg-black bg-opacity-70 z-[9999]"
     >
       <div
         className="bg-white w-[500px] max-h-[600px] rounded-xl p-5 z-50"
