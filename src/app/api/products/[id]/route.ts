@@ -88,10 +88,34 @@ export async function PATCH(
     data.reservedAt = null;
   }
 
+  if (data.status === "sold") {
+    if (!data.buyerId) {
+      return createResponse(res, JSON.stringify({ ok: false }), {
+        status: 400,
+      });
+    }
+
+    await client.purchase.create({
+      data: {
+        user: {
+          connect: {
+            id: data.buyerId,
+          },
+        },
+        product: {
+          connect: {
+            id: +id.toString(),
+          },
+        },
+      },
+    });
+  }
+
   const product = await client.product.update({
     where: { id: +id.toString() },
     data: {
-      ...data,
+      status: data.status,
+      reservedAt: data.reservedAt,
     },
   });
 

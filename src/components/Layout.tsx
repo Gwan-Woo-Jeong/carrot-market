@@ -29,6 +29,7 @@ interface LayoutProps {
   product?: Product;
   handleSelect?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onClickWriteReview?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isSeller?: boolean;
 }
 
 export default function Layout({
@@ -40,6 +41,7 @@ export default function Layout({
   product,
   handleSelect,
   onClickWriteReview,
+  isSeller,
 }: LayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -107,20 +109,18 @@ export default function Layout({
                 >
                   {product.name}
                 </span>
-                {product.status ? (
-                  <select
-                    disabled={product.status === "sold"}
-                    className="border-none pr-8 focus:ring-0"
-                    onChange={handleSelect}
-                    value={product.status}
-                  >
-                    {selectList.map((item) => (
-                      <option value={item.status} key={item.status}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : null}
+                <select
+                  disabled={!isSeller || product.status === "sold"}
+                  className="border-none pr-8 py-0 focus:ring-0 disabled:text-gray-950"
+                  onChange={handleSelect}
+                  value={product.status}
+                >
+                  {selectList.map((item) => (
+                    <option value={item.status} key={item.status}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex justify-between items-center">
                 <span

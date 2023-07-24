@@ -183,7 +183,10 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
     if (loading) return;
     e.preventDefault();
 
-    updateStatus({ status: "sold" });
+    updateStatus({
+      status: "sold",
+      buyerId: data?.chatRoom.guestId,
+    });
     mutateStatus("sold");
     handleModal("sold", false);
   };
@@ -251,6 +254,7 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
       product={data?.chatRoom.product}
       handleSelect={handleSelect}
       onClickWriteReview={() => handleModal("review", true)}
+      isSeller={user?.id === data?.chatRoom.guestId}
     >
       <div className="py-10 pb-16 px-4 space-y-4">
         {data?.chatRoom.chatMessages.map((chatMessage) => (

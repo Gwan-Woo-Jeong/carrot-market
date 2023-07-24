@@ -24,6 +24,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    await client.sale.create({
+      data: {
+        user: {
+          connect: {
+            id: session.user.id,
+          },
+        },
+        product: {
+          connect: {
+            id: product.id,
+          },
+        },
+      },
+    });
+
     return createResponse(res, JSON.stringify({ ok: true, product }), {
       status: 201,
     });
