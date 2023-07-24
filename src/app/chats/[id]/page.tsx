@@ -185,7 +185,7 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
 
     updateStatus({
       status: "sold",
-      buyerId: data?.chatRoom.guestId,
+      buyerId: data?.chatRoom.hostId,
     });
     mutateStatus("sold");
     handleModal("sold", false);
