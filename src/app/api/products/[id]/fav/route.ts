@@ -12,6 +12,32 @@ import { NextRequest } from "next/server";
   여러 레코드를 삭제 (유니크하지 않은 속성으로도 삭제 가능)
  */
 
+export async function GET(
+  req: NextRequest,
+  { params: { id } }: { params: { id: string } }
+) {
+  const res = new Response();
+  const session = await getSession(req, res);
+
+  const isLiked = session.user
+    ? Boolean(
+        await client.fav.findFirst({
+          where: {
+            productId: +id.toString(),
+            userId: session.user.id,
+          },
+          select: {
+            id: true,
+          },
+        })
+      )
+    : false;
+
+  return createResponse(res, JSON.stringify({ ok: true, isLiked }), {
+    status: 200,
+  });
+}
+
 export async function POST(
   req: NextRequest,
   { params: { id } }: { params: { id: string } }

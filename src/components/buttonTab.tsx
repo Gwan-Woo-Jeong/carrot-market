@@ -16,7 +16,6 @@ interface ChatRoomResponse {
 const ButtonTab = ({
   productId,
   sellerId,
-  isLiked,
 }: {
   productId?: number;
   sellerId?: number;
@@ -44,7 +43,7 @@ const ButtonTab = ({
         text={loading ? "loading..." : "Talk to seller"}
         onClick={onClickChatRoom}
       />
-      <LikeButton id={productId} isLiked={isLiked} />
+      <LikeButton id={productId} productId={productId} />
     </div>
   ) : null;
 };

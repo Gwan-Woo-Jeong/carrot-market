@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Button from "@/components/button";
 import useSWR, { useSWRConfig } from "swr";
 import Link from "next/link";
-import { Product, User } from "@prisma/client";
+import { Fav, Product, User } from "@prisma/client";
 import useMutation from "@/libs/client/useMutation";
 import { cls } from "@/libs/client/utils";
 import Image from "next/image";
@@ -80,7 +80,6 @@ interface ItemDetailResponse {
   ok: boolean;
   product: ProductWithUser;
   relatedProducts: ProductWithUser[];
-  isLiked: boolean;
 }
 
 export async function generateStaticParams() {
