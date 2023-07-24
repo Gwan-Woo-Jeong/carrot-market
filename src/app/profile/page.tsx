@@ -32,7 +32,7 @@ const UserProfile = () => {
   return (
     <>
       {user?.avatar ? (
-        <div className="relative w-16 h-16 obeject-cover rounded-full">
+        <div className="relative w-16 h-16 obeject-cover rounded-full overflow-hidden">
           <Image fill alt={user?.avatar} src={user?.avatar} />
         </div>
       ) : (
@@ -58,7 +58,17 @@ const UserReview = () => {
       {data?.reviews?.map((review) => (
         <div key={review.id} className="mt-12">
           <div className="flex space-x-4 items-center">
-            <div className="w-12 h-12 rounded-full bg-slate-500" />
+            {
+              <div className="relative w-12 h-12 obeject-cover rounded-full overflow-hidden bg-slate-500">
+                {review.createdBy.avatar ? (
+                  <Image
+                    fill
+                    alt={review.createdBy.name}
+                    src={review.createdBy.avatar}
+                  />
+                ) : null}
+              </div>
+            }
             <div>
               <h4 className="text-sm font-bold text-gray-800">
                 {review.createdBy.name}
