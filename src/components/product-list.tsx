@@ -6,6 +6,7 @@ import Item from "./item";
 
 interface ProductListProps {
   kind: "favs" | "sales" | "purchases";
+  userId?: string;
 }
 
 interface Record {
@@ -17,9 +18,10 @@ interface ProductListResponse {
   [key: string]: Record[];
 }
 
-export default function ProductList({ kind }: ProductListProps) {
+export default function ProductList({ kind, userId }: ProductListProps) {
   const { data } = useSWR<ProductListResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/users/me/${kind}`
+    process.env.NEXT_PUBLIC_HOST_URL +
+      `/api/users/${kind}${userId ? `?userId=${userId}` : ""}`
   );
 
   return data ? (

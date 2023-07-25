@@ -112,7 +112,7 @@ const CommunityPostDetail: NextPage<{ params: { id: string } }> = ({
               {data?.post?.user.name}
             </p>
             <Link
-              href={`/users/profiles/${data?.post?.user?.id}`}
+              href={`/users/profile/${data?.post?.user?.id}`}
               className="text-xs font-medium text-gray-500"
             >
               View profile &rarr;

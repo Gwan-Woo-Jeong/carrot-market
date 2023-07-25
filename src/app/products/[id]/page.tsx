@@ -154,7 +154,7 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
                 {data?.product?.user?.name}
               </p>
               <Link
-                href={`/users/profiles/${data?.product?.user?.id}`}
+                href={`/profile/${data?.product?.user?.id}`}
                 className="text-xs font-medium text-gray-500"
               >
                 View profile &rarr;
@@ -179,10 +179,7 @@ const ItemDetail = async ({ params: { id } }: { params: { id: string } }) => {
           <h2 className="text-2xl font-bold text-gray-900">Similar items</h2>
           <div className=" mt-6 grid grid-cols-2 gap-4">
             {data?.relatedProducts?.map((product, i) => (
-              <Link
-                key={product.id}
-                href={`/users/profiles/${product?.user?.id}`}
-              >
+              <Link key={product.id} href={`/profile/${product?.user?.id}`}>
                 <div>
                   <div className="h-56 w-full mb-4 bg-slate-300" />
                   <h3 className="text-gray-700 -mb-1">{product.name}</h3>
