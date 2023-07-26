@@ -87,26 +87,22 @@ const ChatDetail: NextPage<{ params: { id: string } }> = ({
   const [score, setScore] = useState({ hover: 3, click: 3 });
 
   const { data, mutate } = useSWR<ChatDetailResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/chats/${id}`
+    typeof window === "undefined" ? `/api/chats/${id}` : null
   );
 
-  const [sendChat] = useMutation<mutationResult>(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/chats/${id}`
-  );
+  const [sendChat] = useMutation<mutationResult>(`/api/chats/${id}`);
 
   const [updateStatus, { loading }] = useMutation<mutationResult>(
-    process.env.NEXT_PUBLIC_HOST_URL +
-      `/api/products/${data?.chatRoom.product.id}`,
+    `/api/products/${data?.chatRoom.product.id}`,
     { method: "PATCH" }
   );
 
   const [postReview, { loading: reviewLoading }] = useMutation<ReviewResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL +
-      `/api/reviews/${
-        data?.chatRoom.hostId === user?.id
-          ? data?.chatRoom.guestId
-          : data?.chatRoom.hostId
-      }?productId=${data?.chatRoom.productId}`
+    `/api/reviews/${
+      data?.chatRoom.hostId === user?.id
+        ? data?.chatRoom.guestId
+        : data?.chatRoom.hostId
+    }?productId=${data?.chatRoom.productId}`
   );
 
   const onValid = ({ review }: ReviewForm) => {

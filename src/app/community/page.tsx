@@ -7,6 +7,7 @@ import { Post, User } from "@prisma/client";
 // import useCoords from "@/libs/client/useCoords";
 import { use } from "react";
 import { getTimeDifference } from "@/libs/client/utils";
+import { resolve } from "path";
 
 interface PostResponse {
   ok: boolean;
@@ -39,8 +40,11 @@ interface PostWithUser extends Post {
  */
 
 const fetchPosts = async () => {
+  if (typeof window === "undefined") {
+    return new Promise((resolve) => resolve({ ok: true, posts: [] }));
+  }
   const res = await fetch(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/posts"
+    "/api/posts"
     // {
     //   next: {
     //     revalidate: 10, // 10초마다 static 페이지 최신화 (getStaticProps) = ISR (Incremental Static Regeneration)
@@ -58,8 +62,8 @@ const postsPromise = fetchPosts();
 const Community: NextPage = () => {
   // const { latitude, longitude } = useCoords();
   // const { data } = useSWR<PostResponse>(
-  //   latitude && longitude
-  //     ?  process.env.NEXT_PUBLIC_HOST_URL + `/api/posts?latitude=${latitude}&longitude=${longitude}`
+  //   typeof window !== "undefined" && latitude && longitude
+  //     ? `/api/posts?latitude=${latitude}&longitude=${longitude}`
   //     : null
   // );
 

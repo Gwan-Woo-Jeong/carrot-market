@@ -29,9 +29,8 @@ interface UploadProductMutation {
 const Upload: NextPage = () => {
   const { register, handleSubmit, watch } = useForm<UploadProductForm>();
   const { user } = useUser();
-  const [uploadProduct, { loading, data }] = useMutation<UploadProductMutation>(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/products"
-  );
+  const [uploadProduct, { loading, data }] =
+    useMutation<UploadProductMutation>("/api/products");
   const router = useRouter();
   const [photoPreview, setPhotoPreview] = useState("");
 
@@ -46,7 +45,7 @@ const Upload: NextPage = () => {
       /*
       Cloud Flare
       
-      const { uploadURL } = await (await fetch(process.env.NEXT_PUBLIC_HOST_URL + `/api/files`)).json();
+      const { uploadURL } = await (await fetch(`/api/files`)).json();
 
       const form = new FormData();
       form.append("file", photo[0], name);

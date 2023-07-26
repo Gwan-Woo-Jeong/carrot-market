@@ -48,7 +48,7 @@ interface ChatRoomResponse {
 
 const Chats: NextPage = () => {
   const { data } = useSWR<ChatRoomResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/chats"
+    typeof window === "undefined" ? "/api/chats" : null
   );
 
   const { user } = useUser();

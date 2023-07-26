@@ -25,9 +25,9 @@ interface ProfileResponse {
   profile: User;
 }
 
-export default function useUser() {
+export default function useUser(){
   const { data, error } = useSWR<ProfileResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/users/me"
+    typeof window === "undefined" ? null : "/api/users/me"
   );
 
   return { user: data?.profile, isLoading: !data && !error };

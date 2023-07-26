@@ -27,9 +27,7 @@ interface WriteResponse {
 const Write: NextPage = () => {
   const { latitude, longitude } = useCoords();
   const { register, handleSubmit } = useForm<WriteForm>();
-  const [post, { loading, data }] = useMutation<WriteResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/posts"
-  );
+  const [post, { loading, data }] = useMutation<WriteResponse>("/api/posts");
   const router = useRouter();
 
   const onValid = (data: WriteForm) => {

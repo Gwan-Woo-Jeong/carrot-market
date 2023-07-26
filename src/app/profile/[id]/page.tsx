@@ -54,7 +54,7 @@ const UserProfile = ({ userId }: { userId: string }) => {
 
 const UserReview = ({ createdForId }: { createdForId: string }) => {
   const { data } = useSWR<ReviewsResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/reviews/${createdForId}`
+    typeof window === "undefined" ? `/api/reviews/${createdForId}` : null
   );
 
   return (

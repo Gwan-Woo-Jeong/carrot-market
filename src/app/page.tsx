@@ -16,9 +16,13 @@ export interface ProductWithHeart extends Product {
 }
 
 const fetchProducts = async () => {
-  const res = await fetch(process.env.NEXT_PUBLIC_HOST_URL + "/api/products", {
+  if (typeof window === "undefined")
+    return new Promise((resolve) => resolve({ ok: false, products: [] }));
+
+  const res = await fetch("/api/products", {
     cache: "no-store", // SSR (getServerSideProps)
   });
+
   return res.json();
 };
 
@@ -38,7 +42,9 @@ const productsPromise = fetchProducts();
  */
 
 const Home: NextPage = () => {
-  // const { data } = useSWR<ProductResponse>(process.env.NEXT_PUBLIC_HOST_URL + "/api/products");
+  // const { data } = useSWR<ProductResponse>(
+  //   typeof window === "undefined" ? null : "/api/products"
+  // );
 
   const data: ProductResponse = use(productsPromise);
 

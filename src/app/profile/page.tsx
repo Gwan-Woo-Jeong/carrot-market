@@ -50,7 +50,7 @@ const UserProfile = () => {
 
 const UserReview = () => {
   const { data } = useSWR<ReviewsResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + "/api/reviews"
+    typeof window === "undefined" ? null : "/api/reviews"
   );
 
   return (

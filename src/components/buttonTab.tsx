@@ -25,7 +25,7 @@ const ButtonTab = ({
   const router = useRouter();
 
   const [createChatRoom, { loading }] = useMutation<ChatRoomResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/chats`,
+    `/api/chats`,
     {
       onSuccess: (data) => router.push(`/chats/${data.chatRoom.id}`),
     }

@@ -48,14 +48,14 @@ const DetailStream: NextPage<{ params: { id: string } }> = ({
 }) => {
   const { user } = useUser();
   const { data, mutate } = useSWR<StreamResponse>(
-    id ? process.env.NEXT_PUBLIC_HOST_URL + `/api/streams/${id}` : null,
+    typeof window !== "undefined" && id ? `/api/streams/${id}` : null,
     fetcher,
     { refreshInterval: 1000 }
   );
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<MessageForm>();
   const [sendMessage, { data: sendMessageData, loading }] = useMutation(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/streams/${id}/messages`
+    `/api/streams/${id}/messages`
   );
 
   const onValid = (form: MessageForm) => {

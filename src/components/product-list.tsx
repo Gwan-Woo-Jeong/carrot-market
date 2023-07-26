@@ -20,8 +20,9 @@ interface ProductListResponse {
 
 export default function ProductList({ kind, userId }: ProductListProps) {
   const { data } = useSWR<ProductListResponse>(
-    process.env.NEXT_PUBLIC_HOST_URL +
-      `/api/users/${kind}${userId ? `?userId=${userId}` : ""}`
+    typeof window === "undefined"
+      ? null
+      : `/api/users/${kind}${userId ? `?userId=${userId}` : ""}`
   );
 
   return data ? (

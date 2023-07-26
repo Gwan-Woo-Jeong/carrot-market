@@ -19,10 +19,9 @@ export default function LikeButton({ id, productId }: ButtonProps) {
   const { data, mutate } = useSWR<FavResponse>(
     `/api/products/${productId}/fav`
   );
-  const [toggleFav] = useMutation(
-    process.env.NEXT_PUBLIC_HOST_URL + `/api/products/${id}/fav`,
-    { callback: () => mutate({ ok: true, isLiked: !data?.isLiked }, false) }
-  );
+  const [toggleFav] = useMutation(`/api/products/${id}/fav`, {
+    callback: () => mutate({ ok: true, isLiked: !data?.isLiked }, false),
+  });
 
   return (
     <button
